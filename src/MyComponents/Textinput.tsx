@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 export default function TextInput() {
   return (
     <>
-      <div className="flex space-x-3">
+      <div className="flex justify-center px-20 space-x-1">
         <Input
-          className="shadow-md w-full outline"
+          className=" w-[30rem] outline outline-1 text-sm"
           placeholder="Send message to ..."
         ></Input>
-        <Button>Send Message</Button>
+        <Button className="">
+          <h1 className="text-sm">Send Message</h1>
+        </Button>
       </div>
     </>
   );
