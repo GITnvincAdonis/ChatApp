@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Chatters() {
   return (
@@ -38,6 +39,8 @@ export default function Chatters() {
 
 function Profimage() {
   return (
-    <Button className="aspect-square rounded-full h-[2rem] w-[2rem]"></Button>
+    <Link to="/conversations">
+      <Button className="aspect-square rounded-full h-[2rem] w-[2rem]"></Button>
+    </Link>
   );
 }

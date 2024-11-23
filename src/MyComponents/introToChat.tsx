@@ -1,5 +1,4 @@
 import { SendIcon, UsersRound } from "lucide-react";
-import TextInput from "./Textinput";
 import { IntegratedModal } from "@/MyComponents/integratedComponents/IntegratedModal";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -48,9 +47,6 @@ export default function IntroToChat() {
                 ></IntegratedModal>
               );
             })}
-          </div>
-          <div className="align-self-end w-full p-3">
-            <TextInput></TextInput>
           </div>
         </div>
       </div>
