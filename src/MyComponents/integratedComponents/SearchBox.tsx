@@ -62,7 +62,7 @@ export function SearchBox() {
         <Command>
           <CommandInput placeholder="Search User profile..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No User found.</CommandEmpty>
             <CommandGroup>
               {Users.map((User) => (
                 <CommandItem

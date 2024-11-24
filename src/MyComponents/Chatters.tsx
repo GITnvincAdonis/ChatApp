@@ -1,9 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useGroupStore, useSwitcherStore } from "./MessageStore";
+import { useEffect } from "react";
 
 export default function Chatters() {
+  const Icons = useGroupStore((state) => state.groups);
+  const SetCurrentRoomInfo = useSwitcherStore((state) => state.SetCurrentRoom);
+
+  useEffect(() => {
+    console.log(Icons);
+  }, [Icons]);
   return (
     <>
       <div className="w-max">
@@ -20,13 +28,18 @@ export default function Chatters() {
             </div>
 
             <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
-              {Array.from({ length: 30 }).map(() => {
+              {Icons.map((item, index) => {
                 return (
-                  <>
-                    <div className="flex  my-2 space-x-3">
-                      <Profimage></Profimage>
-                    </div>
-                  </>
+                  <div
+                    key={index}
+                    className="flex  my-2 space-x-3"
+                    onClick={() => {
+                      console.log(item.group_name);
+                      SetCurrentRoomInfo(item.group_name, item.description);
+                    }}
+                  >
+                    <Profimage></Profimage>
+                  </div>
                 );
               })}
             </ScrollArea>
@@ -38,9 +51,13 @@ export default function Chatters() {
 }
 
 function Profimage() {
+  const nav = useNavigate();
   return (
-    <Link to="/conversations">
-      <Button className="aspect-square rounded-full h-[2rem] w-[2rem]"></Button>
-    </Link>
+    <Button
+      onMouseUp={() => {
+        nav("/conversations");
+      }}
+      className="aspect-square rounded-full h-[2rem] w-[2rem]"
+    ></Button>
   );
 }

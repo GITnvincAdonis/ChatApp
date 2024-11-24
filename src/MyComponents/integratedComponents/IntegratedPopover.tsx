@@ -20,13 +20,11 @@ export function IntegratedPopover() {
         </PopoverTrigger>
         <PopoverContent className="w-full h-0 border-none p-0 text-center bg-none shadow-none ">
           <div className="flex flex-col space-y-2">
-            {Array.from({ length: 3 }).map(() => {
+            {Array.from({ length: 3 }).map((_, index) => {
               return (
-                <>
-                  <Button className="aspect-square">
-                    <ChevronDown></ChevronDown>
-                  </Button>
-                </>
+                <Button key={index} className="aspect-square">
+                  <ChevronDown></ChevronDown>
+                </Button>
               );
             })}
           </div>

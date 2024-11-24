@@ -8,7 +8,74 @@ import { SearchBox } from "./integratedComponents/SearchBox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
+import { io } from "socket.io-client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useGroupStore } from "./MessageStore";
+
+const socket = io("http://localhost:2000");
+
+socket.on("connect", () => {
+  console.log(`${socket.id} connected`);
+});
+
 export default function IntroToChat() {
+  const [roomName, setRoomName] = useState("");
+  const [passcode, setPassCode] = useState("");
+
+  const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
+
+  const ModalOptions = [
+    {
+      header: "One-on-One",
+      tag: "Chat privately with an individual",
+      modalContent: <SearchBox></SearchBox>,
+    },
+    {
+      header: "Connect to Chat Room",
+      tag: "Group conversation between multiple people",
+      modalContent: (
+        <>
+          <div className="py-4">
+            <div className="flex flex-col items-center gap-2">
+              <Label htmlFor="name" className="text-start w-full">
+                Code
+              </Label>
+              <Input
+                id="name"
+                placeholder="Room Code "
+                className=""
+                onChange={(e) => {
+                  setRoomName(e.target.value || "");
+                }}
+              />
+            </div>
+            <div className="flex flex-col items-center py-5 gap-3 ">
+              <Label htmlFor="username" className="text-start w-full">
+                Passcode
+              </Label>
+              <Input
+                onChange={(e) => {
+                  setPassCode(e.target.value || "");
+                }}
+                id="username"
+                placeholder="Enter passcode"
+              />
+            </div>
+            <Button
+              disabled={!(roomName != "" && passcode != "")}
+              className="w-full"
+              onClick={() => {
+                UpdateChatList(roomName, passcode);
+              }}
+            >
+              Join Room
+            </Button>
+          </div>
+        </>
+      ),
+    },
+  ];
   return (
     <>
       {" "}
@@ -24,6 +91,7 @@ export default function IntroToChat() {
             {CardOptions.map((item, index) => {
               return (
                 <IntegratedModal
+                  key={index}
                   header={ModalOptions[index].header}
                   tagline={ModalOptions[index].tag}
                   modalContent={ModalOptions[index].modalContent}
@@ -76,35 +144,5 @@ const CardOptions = [
     tagline: "have a group with individuals over a shared connection",
 
     icon: <UsersRound color="white" size={40}></UsersRound>,
-  },
-];
-
-const ModalOptions = [
-  {
-    header: "One-on-One",
-    tag: "Chat privately with an individual",
-    modalContent: <SearchBox></SearchBox>,
-  },
-  {
-    header: "Connect to Chat Room",
-    tag: "Group conversation between multiple people",
-    modalContent: (
-      <>
-        <div className="py-4">
-          <div className="flex flex-col items-center gap-2">
-            <Label htmlFor="name" className="text-start w-full">
-              Code
-            </Label>
-            <Input id="name" placeholder="Room Code " className="" />
-          </div>
-          <div className="flex flex-col items-center py-5 gap-3 ">
-            <Label htmlFor="username" className="text-start w-full">
-              Passcode
-            </Label>
-            <Input id="username" placeholder="Enter passcode" />
-          </div>
-        </div>
-      </>
-    ),
   },
 ];
