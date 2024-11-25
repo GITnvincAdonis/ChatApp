@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { LoginEndpoint, SignUpEndpoint } from "@/API endpoints/API";
 
 const formSchema = z.object({
   username: z.string().min(8, {
@@ -36,6 +37,9 @@ export function SignInForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const signUpName = values.username;
+    const signUpPassword = values.password;
+    SignUpEndpoint(signUpName, signUpPassword);
     console.log(values);
   }
   return (
@@ -93,7 +97,9 @@ export function LogInForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema2>) {
-    console.log(values);
+    const name = values.username;
+    const password = values.password;
+    LoginEndpoint(name, password);
   }
   return (
     <Form {...form}>
@@ -126,7 +132,7 @@ export function LogInForm() {
             </FormItem>
           )}
         />
-        <Button className=" w-full" type="submit">
+        <Button className=" w-full" type="submit" onClick={() => {}}>
           LOGIN
         </Button>
       </form>
