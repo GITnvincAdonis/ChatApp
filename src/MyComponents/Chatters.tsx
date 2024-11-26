@@ -27,7 +27,7 @@ export default function Chatters() {
   } = useQuery({
     queryFn: () => GetAllGroups(USERID),
     queryKey: ["user_Info"],
-    //enabled: USERID != "" && USERID != "undefined",
+    enabled: USERID != "" && USERID != "undefined",
   });
   if (isLoading) console.log("loading cchats");
   if (isError) console.log(error);
