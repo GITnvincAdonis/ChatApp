@@ -20,6 +20,7 @@ export default function SignInPage() {
     setEntryState("login");
   }
   const navigate = useNavigate();
+
   return (
     <>
       <div className="h-screen border items-center flex justify-center  bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:25px_25px] z-0">

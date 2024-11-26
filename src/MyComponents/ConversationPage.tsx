@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ScrollArea } from "../components/ui/scroll-area";
 import Chatters from "./Chatters";
 import { IntegratedPopover } from "./integratedComponents/IntegratedPopover";
-import { MessageStore, useSwitcherStore } from "./MessageStore";
+import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
 import { AntagBubble, ProtagBubble } from "./TextBubbles";
 import TextInput from "./Textinput";
 

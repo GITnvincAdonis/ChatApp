@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { MessageStore, useSwitcherStore } from "./MessageStore";
+import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
 
 const socket = io("http://localhost:2000");
 

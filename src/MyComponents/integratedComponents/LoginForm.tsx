@@ -14,7 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginEndpoint, SignUpEndpoint } from "@/API endpoints/API";
+import {
+  useLoginGetUserQ,
+  useSignUpAddUserQ,
+} from "../../P_Clean Code Abstractions/tanStackQueries";
 
 const formSchema = z.object({
   username: z.string().min(8, {
@@ -26,8 +29,7 @@ const formSchema = z.object({
 });
 
 export function SignInForm() {
-  // ...
-
+  // form information
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,9 +41,12 @@ export function SignInForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     const signUpName = values.username;
     const signUpPassword = values.password;
-    SignUpEndpoint(signUpName, signUpPassword);
-    console.log(values);
+    SetClicked(true);
+    SetSignInData({ name: signUpName, passcode: signUpPassword });
   }
+  const { SetClicked, SetSignInData } = useSignUpAddUserQ();
+  ///////////////////////
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -85,6 +90,7 @@ const formSchema2 = z.object({
   username: z.string(),
   password: z.string(),
 });
+
 export function LogInForm() {
   // ...
 
@@ -99,8 +105,11 @@ export function LogInForm() {
   function onSubmit(values: z.infer<typeof formSchema2>) {
     const name = values.username;
     const password = values.password;
-    LoginEndpoint(name, password);
+    SetClicked(true);
+    SetlogInData({ name: name, passcode: password });
   }
+  const { SetClicked, SetlogInData } = useLoginGetUserQ();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">

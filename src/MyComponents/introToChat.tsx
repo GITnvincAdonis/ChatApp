@@ -1,17 +1,15 @@
-import { SendIcon, UsersRound } from "lucide-react";
+import { PlusIcon, SendIcon, UsersRound } from "lucide-react";
 import { IntegratedModal } from "@/MyComponents/integratedComponents/IntegratedModal";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { IntegratedPopover } from "@/MyComponents/integratedComponents/IntegratedPopover";
 import { PlayCarousel } from "@/MyComponents/integratedComponents/PlayingCarousel";
-import { SearchBox } from "./integratedComponents/SearchBox";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-
 import { io } from "socket.io-client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useGroupStore } from "./MessageStore";
+import {
+  AcModal1,
+  AcModal2,
+  AcModal3,
+} from "../P_Clean Code Abstractions/ModelActivatedContent";
 
 const socket = io("http://localhost:2000");
 
@@ -20,60 +18,21 @@ socket.on("connect", () => {
 });
 
 export default function IntroToChat() {
-  const [roomName, setRoomName] = useState("");
-  const [passcode, setPassCode] = useState("");
-
-  const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
-
   const ModalOptions = [
     {
       header: "One-on-One",
       tag: "Chat privately with an individual",
-      modalContent: <SearchBox></SearchBox>,
+      modalContent: <AcModal1></AcModal1>,
     },
     {
       header: "Connect to Chat Room",
       tag: "Group conversation between multiple people",
-      modalContent: (
-        <>
-          <div className="py-4">
-            <div className="flex flex-col items-center gap-2">
-              <Label htmlFor="name" className="text-start w-full">
-                Code
-              </Label>
-              <Input
-                id="name"
-                placeholder="Room Code "
-                className=""
-                onChange={(e) => {
-                  setRoomName(e.target.value || "");
-                }}
-              />
-            </div>
-            <div className="flex flex-col items-center py-5 gap-3 ">
-              <Label htmlFor="username" className="text-start w-full">
-                Passcode
-              </Label>
-              <Input
-                onChange={(e) => {
-                  setPassCode(e.target.value || "");
-                }}
-                id="username"
-                placeholder="Enter passcode"
-              />
-            </div>
-            <Button
-              disabled={!(roomName != "" && passcode != "")}
-              className="w-full"
-              onClick={() => {
-                UpdateChatList(roomName, passcode);
-              }}
-            >
-              Join Room
-            </Button>
-          </div>
-        </>
-      ),
+      modalContent: <AcModal2></AcModal2>,
+    },
+    {
+      header: "ADD A NEW ROOM",
+      tag: "",
+      modalContent: <AcModal3></AcModal3>,
     },
   ];
   return (
@@ -144,5 +103,11 @@ const CardOptions = [
     tagline: "have a group with individuals over a shared connection",
 
     icon: <UsersRound color="white" size={40}></UsersRound>,
+  },
+  {
+    text: "CREATE A NEW ROOM",
+    tagline: "Start your own group chat where others can join",
+
+    icon: <PlusIcon color="white" size={40}></PlusIcon>,
   },
 ];

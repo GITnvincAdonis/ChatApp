@@ -2,8 +2,11 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useGroupStore, useSwitcherStore } from "./MessageStore";
+import { useGroupStore, useSwitcherStore } from "../STORES/MessageStore";
 import { useEffect } from "react";
+import { UserIDStore } from "@/STORES/userAuthStore";
+import { GetAllGroups } from "@/API endpoints/API";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Chatters() {
   const Icons = useGroupStore((state) => state.groups);
@@ -12,6 +15,28 @@ export default function Chatters() {
   useEffect(() => {
     console.log(Icons);
   }, [Icons]);
+
+  const USERID = UserIDStore((state) => state.id);
+
+
+  const {
+    data: userdata,
+    isError,
+    error,
+    isLoading,
+  } = useQuery({
+    queryFn: () => GetAllGroups(USERID),
+    queryKey: ["user_Info"],
+    //enabled: USERID != "" && USERID != "undefined",
+  });
+  if (isLoading) console.log("loading cchats");
+  if (isError) console.log(error);
+
+  useEffect(() => {
+    console.log(`data ${userdata}, ${USERID} `);
+  }, [userdata]);
+
+
   return (
     <>
       <div className="w-max">
