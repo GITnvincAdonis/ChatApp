@@ -3,7 +3,7 @@ export function ProtagBubble(props: { textContent: string }) {
   return (
     <>
       <div className="flex items-center space-x-2 m-1 min-w-[30%] max-w-[60%] h-full p-1">
-        <h1 className="w-full bg-black text-secondary shadow-md border text-justify font-mono font-semibold rounded-xl p-3">
+        <h1 className="w-full bg-foreground text-secondary  shadow-md border text-justify font-mono font-semibold rounded-xl p-3">
           {textContent}
         </h1>
         <div className="bg-primary  border rounded-full aspect-square h-[3rem]"></div>

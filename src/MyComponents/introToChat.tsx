@@ -1,6 +1,6 @@
 import { PlusIcon, SendIcon, UsersRound } from "lucide-react";
 import { IntegratedModal } from "@/MyComponents/integratedComponents/IntegratedModal";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { IntegratedPopover } from "@/MyComponents/integratedComponents/IntegratedPopover";
 import { PlayCarousel } from "@/MyComponents/integratedComponents/PlayingCarousel";
@@ -38,7 +38,12 @@ export default function IntroToChat() {
   return (
     <>
       {" "}
-      <div className="relative h-full w-full">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="relative h-full w-full"
+      >
         {/* Background Div */}
         <Background></Background>
         {/* Content */}
@@ -56,12 +61,12 @@ export default function IntroToChat() {
                   modalContent={ModalOptions[index].modalContent}
                   trigger={
                     <motion.div whileHover={{ scale: 1.04 }} key={index}>
-                      <Card className="flex bg-black">
+                      <Card className="flex bg-black border-primary">
                         <CardHeader>
-                          <h1 className="text-end text-secondary font-bold font-Geist text-sm w-[10rem]">
+                          <h1 className="text-end text-white font-bold font-Geist text-sm w-[10rem]">
                             {item.text}
                           </h1>
-                          <h2 className="text-end font-mono text-secondary text-xs leading-4 w-[10rem]">
+                          <h2 className="text-end font-mono  text-white text-xs leading-4 w-[10rem]">
                             {item.tagline}
                           </h2>
                         </CardHeader>
@@ -76,19 +81,27 @@ export default function IntroToChat() {
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
 function Background() {
   return (
     <>
-      <div className="absolute inset-0  bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:26px_24px] z-0">
-        <div className="w-full h-full flex flex-col items-center space-y-[30rem] justify-center">
-          <PlayCarousel direction="backward"></PlayCarousel>
-          <PlayCarousel direction="forward"></PlayCarousel>
-        </div>
-      </div>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="absolute inset-0  bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:26px_24px] z-0"
+        >
+          <div className="w-full h-full flex flex-col items-center space-y-[30rem] justify-center">
+            <PlayCarousel direction="backward"></PlayCarousel>
+            <PlayCarousel direction="forward"></PlayCarousel>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

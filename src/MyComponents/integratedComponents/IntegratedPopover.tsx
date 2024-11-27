@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDown, PersonStandingIcon, SettingsIcon } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { PersonStandingIcon, SettingsIcon } from "lucide-react";
 
 export function IntegratedPopover() {
   return (
@@ -20,10 +22,10 @@ export function IntegratedPopover() {
         </PopoverTrigger>
         <PopoverContent className="w-full h-0 border-none p-0 text-center bg-none shadow-none ">
           <div className="flex flex-col space-y-2">
-            {Array.from({ length: 3 }).map((_, index) => {
+            {PopoverOptions.map((item, index) => {
               return (
-                <Button key={index} className="aspect-square">
-                  <ChevronDown></ChevronDown>
+                <Button key={index} className="aspect-square m-2">
+                  {item.content}
                 </Button>
               );
             })}
@@ -33,3 +35,23 @@ export function IntegratedPopover() {
     </>
   );
 }
+const DarkToggle = () => {
+  const root = document.documentElement;
+
+  return (
+    <div className="flex items-center space-x-2 ">
+      <Switch
+        onClick={() => {
+          if (root.classList.contains("dark")) root.classList.remove("dark");
+          else if (!root.classList.contains("dark")) root.classList.add("dark");
+        }}
+      />
+      <Label>Dark Mode</Label>
+    </div>
+  );
+};
+const PopoverOptions = [
+  {
+    content: <DarkToggle></DarkToggle>,
+  },
+];

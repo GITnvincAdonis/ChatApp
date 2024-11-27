@@ -49,3 +49,26 @@ export const useSwitcherStore = create<RoomCode>((set) => ({
     set(() => ({ code: code }));
   },
 }));
+///fetched
+interface groupData {
+  group_id: string;
+  group_name: string;
+  chat_password: string;
+}
+interface FetchedGroups {
+  group: groupData[];
+  SetGroups: (
+    group_id: string,
+    group_name: string,
+    chat_password: string
+  ) => void;
+}
+
+export const useFetchedGroupsStore = create<FetchedGroups>((set) => ({
+  group: [],
+  SetGroups: (group_id: string, group_name: string, chat_password: string) => {
+    set((state) => ({
+      group: [...state.group, { group_id, group_name, chat_password }],
+    }));
+  },
+}));

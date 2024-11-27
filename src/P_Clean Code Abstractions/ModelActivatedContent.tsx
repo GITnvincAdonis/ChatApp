@@ -4,7 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useGroupStore } from "@/STORES/MessageStore";
-import { useAddToGroupMembersQ, useAddToUserQ } from "./tanStackQueries";
+import {
+  useAddToGroupMembersQ,
+  useAddToUserQ,
+  useGetGroupIDQ,
+} from "./tanStackQueries";
 
 export function AcModal1() {
   return <SearchBox></SearchBox>;
@@ -12,7 +16,9 @@ export function AcModal1() {
 export function AcModal2() {
   const [roomName, setRoomName] = useState("");
   const [passcode, setPassCode] = useState("");
-  const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
+  const { toggleFetch } = useGetGroupIDQ(roomName, passcode);
+  const { toggleFetch: AddGrpMem } = useAddToGroupMembersQ();
+
   return (
     <div className="py-4">
       <div className="flex flex-col items-center gap-2">
@@ -42,9 +48,15 @@ export function AcModal2() {
       </div>
       <Button
         disabled={!(roomName != "" && passcode != "")}
-        className="w-full"
-        onClick={() => {
-          UpdateChatList(roomName, passcode);
+        className="w-full bg-black text-white"
+        onClick={() => {}}
+        onMouseDown={() => {
+          toggleFetch(true);
+          AddGrpMem(true);
+        }}
+        onMouseUp={() => {
+          toggleFetch(false);
+          AddGrpMem(false);
         }}
       >
         Join Room
@@ -55,15 +67,13 @@ export function AcModal2() {
 export function AcModal3() {
   const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
   const {
-    mutateAsync: AddGrp,
     setNewPassCode,
     setNewRoomName,
     SetAddGroup,
     newpasscode,
     newroomName,
-    clickedAddGroup,
   } = useAddToUserQ();
-  const { mutateAsync: AddGrpMem } = useAddToGroupMembersQ();
+  const { toggleFetch } = useAddToGroupMembersQ();
   return (
     <div className="py-4">
       <div className="flex flex-col items-center gap-2">
@@ -93,15 +103,16 @@ export function AcModal3() {
       </div>
       <Button
         disabled={!(newroomName != "" && newpasscode != "")}
-        className="w-full"
-        onClick={async () => {
+        className="w-full bg-black text-white"
+        onMouseDown={() => {
           console.log(newroomName);
-          if (clickedAddGroup) {
-            await AddGrp();
-            await AddGrpMem();
-          }
           SetAddGroup(true);
           UpdateChatList(newroomName, newpasscode);
+          toggleFetch(true);
+        }}
+        onMouseUp={() => {
+          SetAddGroup(false);
+          toggleFetch(false);
         }}
       >
         Create Room

@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
+import { usePostMessageQ } from "@/P_Clean Code Abstractions/tanStackQueries";
+import { motion } from "framer-motion";
 
 const socket = io("http://localhost:2000");
 
@@ -38,9 +40,21 @@ export default function TextInput() {
       socket.emit("leave-group", { group_name: CurrentRoomName });
     };
   }, [CurrentRoomName]);
+
+  const { setClicked } = usePostMessageQ(textInput);
   return (
     <>
-      <div className="flex justify-center px-20 space-x-1">
+      <motion.div
+        initial={{ y: 80 }}
+        animate={{ y: 0 }}
+        transition={{
+          duration: 0.31,
+          delay: 0.31,
+          type: "tween",
+          ease: "circOut",
+        }}
+        className="flex justify-center px-20 space-x-1"
+      >
         <Input
           className=" w-[30rem] outline outline-1 text-sm"
           placeholder="Send message to ..."
@@ -50,14 +64,19 @@ export default function TextInput() {
         ></Input>
         <Button
           disabled={textInput == "" ? true : false}
-          onClick={() => {
+          onMouseDown={() => {
+            setClicked(true);
+
             SendMessageToServer(textInput, CurrentRoomName);
             AddToMessage(textInput, "right");
+          }}
+          onMouseUp={() => {
+            setClicked(false);
           }}
         >
           Send Message
         </Button>
-      </div>
+      </motion.div>
     </>
   );
 }

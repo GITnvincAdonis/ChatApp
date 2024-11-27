@@ -19,9 +19,9 @@ export function IntegratedModal(props: {
       {" "}
       <Dialog>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] text-black bg-white">
           <DialogHeader>
-            <DialogTitle className="text-center">{header}</DialogTitle>
+            <DialogTitle className="text-center ">{header}</DialogTitle>
             <DialogDescription className="text-center">
               {tagline}
             </DialogDescription>

@@ -38,11 +38,14 @@ export const SignUpEndpoint = async (
 
 export const GetAllGroups = async (userID: string) => {
   try {
+    console.log(userID);
     const userGroups = await fetch(
-      `${import.meta.env.VITE_END_POINT}/groups/group_data?${userID}`
+      `${import.meta.env.VITE_END_POINT}/groups/group_data?user_id=${userID}`
     );
     const response = await userGroups.json();
+
     console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
@@ -71,8 +74,8 @@ export const AddToGroupMembersEP = async (
   user_id: string
 ) => {
   try {
-    console.log(`the group id${group_id}`);
-    const userGroups = await fetch(
+    console.log(`Group ID: ${group_id}, User ID: ${user_id}`);
+    const response = await fetch(
       `${import.meta.env.VITE_END_POINT}/groups/group_member`,
       {
         method: "POST",
@@ -80,11 +83,72 @@ export const AddToGroupMembersEP = async (
         body: JSON.stringify({ user_id, group_id }),
       }
     );
+
+    // Check if the HTTP response is not OK
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse error message
+      throw new Error(errorData.message || "Error adding member to group");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in AddToGroupMembersEP:", error);
+    throw error; // Rethrow the error for frontend handling
+  }
+};
+
+export const PostMessage = async (
+  text: string,
+  group_id: string,
+  user_id: string
+) => {
+  try {
+    const userGroups = await fetch(
+      `${import.meta.env.VITE_END_POINT}/messages`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ text, user_id, group_id }),
+      }
+    );
+    const response = await userGroups.json();
+
+    console.log(response.message_id);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GetGroupMessages = async (group_id: string) => {
+  try {
+    const userGroups = await fetch(
+      `${import.meta.env.VITE_END_POINT}/messages?group_id=${group_id}`
+    );
     const response = await userGroups.json();
 
     console.log(response);
     return response;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const GetGroup = async (group_name: string, chat_password: string) => {
+  try {
+    const userGroups = await fetch(
+      `${import.meta.env.VITE_END_POINT}/groups/single_group_id`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ group_name, chat_password }),
+      }
+    );
+  
+
+    return await userGroups.json();
+  } catch (error) {
+    console.error("Error in Getting group ID:", error);
+    throw error; // Rethrow the error for frontend handling
   }
 };

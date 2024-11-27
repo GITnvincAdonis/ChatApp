@@ -55,9 +55,11 @@
     --chart-5: 27 87% 67%;
 
     --radius: 0.5rem;
+    scrollbar-gutter: stable;
+    scrollbar-color: black black;
   }
   .dark {
-    --background: 20 14.3% 4.1%;
+    --background: 50 04.3% 4%;
 
     --foreground: 60 9.1% 97.8%;
 

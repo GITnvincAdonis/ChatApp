@@ -2,11 +2,22 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useGroupStore, useSwitcherStore } from "../STORES/MessageStore";
-import { useEffect } from "react";
+import {
+  useFetchedGroupsStore,
+  useGroupStore,
+  useSwitcherStore,
+} from "../STORES/MessageStore";
+import { useEffect, useState } from "react";
 import { UserIDStore } from "@/STORES/userAuthStore";
 import { GetAllGroups } from "@/API endpoints/API";
 import { useQuery } from "@tanstack/react-query";
+
+interface GroupData {
+  group_id: string;
+  group_name: string;
+  chat_password: string;
+  user_id: string;
+}
 
 export default function Chatters() {
   const Icons = useGroupStore((state) => state.groups);
@@ -17,8 +28,8 @@ export default function Chatters() {
   }, [Icons]);
 
   const USERID = UserIDStore((state) => state.id);
-
-
+  const [returnedGroupData, setData] = useState<GroupData[]>([]);
+  //const [filtered, setFData] = useState<GroupData[]>([]);
   const {
     data: userdata,
     isError,
@@ -34,9 +45,28 @@ export default function Chatters() {
 
   useEffect(() => {
     console.log(`data ${userdata}, ${USERID} `);
+    if (userdata) {
+      setData(userdata);
+    }
   }, [userdata]);
+  useEffect(() => {
+    if (userdata) {
+      const uniqueMessages = new Map(); // Prevent duplicates
+      [...userdata, ...Icons].forEach((msg) => {
+        uniqueMessages.set(msg.message_id, msg);
+      });
+      setData(Array.from(uniqueMessages.values()));
+    }
+  }, [userdata]);
+  useEffect(() => {
+    returnedGroupData.map((item) => {
+      console.log(item);
+      UpdateFetchedGroups(item.group_id, item.group_name, item.chat_password);
+    });
+  }, [returnedGroupData]);
 
-
+  const UpdateFetchedGroups = useFetchedGroupsStore((state) => state.SetGroups);
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-max">
@@ -44,6 +74,9 @@ export default function Chatters() {
           <div className=" relative flex flex-col  p-0 font-semibold w-full">
             <div className="relative shadow-2xl shadow-black outline-8 ">
               <MessageCircleMoreIcon
+                onClick={() => {
+                  navigate("/home");
+                }}
                 className={
                   "w-full h-full  border-2 border-dashed p-2 shadow-3xl shadow-black border-black rounded-lg "
                 }
@@ -53,6 +86,20 @@ export default function Chatters() {
             </div>
 
             <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
+              {returnedGroupData.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex  my-2 space-x-3"
+                    onClick={() => {
+                      console.log(item.group_name);
+                      SetCurrentRoomInfo(item.group_name, item.group_id);
+                    }}
+                  >
+                    <Profimage></Profimage>
+                  </div>
+                );
+              })}
               {Icons.map((item, index) => {
                 return (
                   <div
