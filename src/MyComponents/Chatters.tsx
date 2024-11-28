@@ -8,7 +8,6 @@ import {
   useSwitcherStore,
 } from "../STORES/MessageStore";
 import { useEffect, useState } from "react";
-import { UserIDStore } from "@/STORES/userAuthStore";
 import { GetAllGroups } from "@/API endpoints/API";
 import { useQuery } from "@tanstack/react-query";
 
@@ -27,35 +26,28 @@ export default function Chatters() {
     console.log(Icons);
   }, [Icons]);
 
-  const USERID = UserIDStore((state) => state.id);
   const [returnedGroupData, setData] = useState<GroupData[]>([]);
   //const [filtered, setFData] = useState<GroupData[]>([]);
+
+  const userID = JSON.parse(localStorage.getItem("userAuthData") || "{}");
+  const id = userID?.user?.user_id;
+  console.log(id);
+
   const {
     data: userdata,
     isError,
     error,
     isLoading,
   } = useQuery({
-    queryFn: () => GetAllGroups(USERID),
+    queryFn: () => GetAllGroups(id),
     queryKey: ["user_Info"],
-    enabled: USERID != "" && USERID != "undefined",
   });
   if (isLoading) console.log("loading cchats");
   if (isError) console.log(error);
 
   useEffect(() => {
-    console.log(`data ${userdata}, ${USERID} `);
     if (userdata) {
       setData(userdata);
-    }
-  }, [userdata]);
-  useEffect(() => {
-    if (userdata) {
-      const uniqueMessages = new Map(); // Prevent duplicates
-      [...userdata, ...Icons].forEach((msg) => {
-        uniqueMessages.set(msg.message_id, msg);
-      });
-      setData(Array.from(uniqueMessages.values()));
     }
   }, [userdata]);
   useEffect(() => {

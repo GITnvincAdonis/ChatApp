@@ -17,7 +17,9 @@ import { Input } from "@/components/ui/input";
 import {
   useLoginGetUserQ,
   useSignUpAddUserQ,
+  useTokenRetrieve,
 } from "../../P_Clean Code Abstractions/tanStackQueries";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   username: z.string().min(8, {
@@ -109,7 +111,11 @@ export function LogInForm() {
     SetlogInData({ name: name, passcode: password });
   }
   const { SetClicked, SetlogInData } = useLoginGetUserQ();
+  useTokenRetrieve();
 
+  const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
+  if (token != null) navigate("/home");
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">

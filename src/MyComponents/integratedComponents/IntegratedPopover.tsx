@@ -6,11 +6,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { PersonStandingIcon, SettingsIcon } from "lucide-react";
+import { useTokenRetrieve } from "@/P_Clean Code Abstractions/tanStackQueries";
+import { UserIDStore } from "@/STORES/userAuthStore";
+import {
+  Hand,
+  LogOutIcon,
+  PersonStandingIcon,
+  SettingsIcon,
+} from "lucide-react";
 
 export function IntegratedPopover() {
+  useTokenRetrieve();
+  const UserName = UserIDStore((state) => state.name);
   return (
     <>
+      <Button className="my-2 mx-2">
+        Hi {UserName} <Hand></Hand>
+      </Button>
       <Button className="my-2">
         <PersonStandingIcon></PersonStandingIcon>
       </Button>
@@ -21,10 +33,10 @@ export function IntegratedPopover() {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full h-0 border-none p-0 text-center bg-none shadow-none ">
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col items-end space-y-0 mx-4">
             {PopoverOptions.map((item, index) => {
               return (
-                <Button key={index} className="aspect-square m-2">
+                <Button key={index} className="w-max m-2">
                   {item.content}
                 </Button>
               );
@@ -50,8 +62,15 @@ const DarkToggle = () => {
     </div>
   );
 };
+
+const SignOut = () => {
+  return <LogOutIcon />;
+};
 const PopoverOptions = [
   {
     content: <DarkToggle></DarkToggle>,
+  },
+  {
+    content: <SignOut></SignOut>,
   },
 ];

@@ -5,6 +5,7 @@ import {
   LoginEndpoint,
   PostMessage,
   SignUpEndpoint,
+  TokenUserInfo,
 } from "@/API endpoints/API";
 import {
   useFetchedGroupsStore,
@@ -14,19 +15,14 @@ import {
 import { UserIDStore } from "@/STORES/userAuthStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function useSignUpAddUserQ() {
-  //STATE VARS
   const [signInData, SetSignInData] = useState<{
     name: string;
     passcode: string;
   }>({ name: "", passcode: "" });
 
   const [clicked, SetClicked] = useState(false);
-  /////////////////////////////
-
-  //FETCHING FROM BACKEND
   const { data, isLoading, isError, error } = useQuery({
     queryFn: async () => SignUpEndpoint(signInData.name, signInData.passcode),
     queryKey: ["user_id"],
@@ -36,22 +32,17 @@ export function useSignUpAddUserQ() {
   if (isError) console.log(error);
   if (isLoading) console.log("loading UserID");
 
-  //////
-  ///SETTING STORE DATA
-  const navigate = useNavigate();
-  const SetStoreUserID = UserIDStore((state) => state.ChangeID);
   useEffect(() => {
     console.log(data != undefined);
     if (data && clicked) {
       console.log("clicking data");
-      SetStoreUserID(`${data}`);
-      navigate("/home");
+      localStorage.setItem("jwt", data.token);
     }
   }, [data]);
 
   return { SetSignInData, SetClicked };
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 export function useLoginGetUserQ() {
   const [LoginInData, SetlogInData] = useState<{
     name: string;
@@ -59,9 +50,6 @@ export function useLoginGetUserQ() {
   }>({ name: "", passcode: "" });
 
   const [clicked, SetClicked] = useState(false);
-  /////////////////////////////
-
-  //FETCHING FROM BACKEND
   const { data, isLoading, isError, error } = useQuery({
     queryFn: async () => LoginEndpoint(LoginInData.name, LoginInData.passcode),
     queryKey: ["user_id"],
@@ -71,21 +59,50 @@ export function useLoginGetUserQ() {
   if (isError) console.log(error);
   if (isLoading) console.log("loading UserID");
 
-  //////
-  ///SETTING STORE DATA
-  const navigate = useNavigate();
-  const SetStoreUserID = UserIDStore((state) => state.ChangeID);
   useEffect(() => {
     console.log(`login ${data}`);
     if (data && clicked) {
       console.log("clicking data");
-      SetStoreUserID(`${data}`);
-      navigate("/home");
+      localStorage.setItem("jwt", data.token);
     }
   }, [data]);
   return { SetlogInData, SetClicked };
 }
+////////////////////////////////////////////////////////////////////////////////////////////////
+export function useTokenRetrieve() {
+  const token = localStorage.getItem("jwt");
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: async () => TokenUserInfo(),
+    queryKey: ["user_information"],
+    enabled: token != null,
+  });
+
+  if (isError) console.log(error);
+  if (isLoading) console.log("loading UserID");
+  const SetStoreUserID = UserIDStore((state) => state.ChangeID);
+  const SetStoreUserName = UserIDStore((state) => state.ChangeName);
+
+  useEffect(() => {
+    console.log(`login ${data}`);
+
+    if (data && data.authData) {
+      localStorage.setItem("userAuthData", JSON.stringify(data.authData));
+      const userData = JSON.parse(localStorage.getItem("userAuthData") || "{}");
+      const userId = userData?.user?.user_id;
+      const username = userData?.user?.username;
+
+      SetStoreUserID(userId);
+      SetStoreUserName(username);
+      console.log("User ID:", userId);
+      console.log("Username:", username);
+    } else {
+      console.log("authData is missing from data");
+    }
+    //
+  }, [data]);
+}
+/////////////////////////////////////////////////////////////////////////////
 export function useAddToUserQ() {
   const queryClient = useQueryClient();
   const UpdateCurrentNewGroupID = UserIDStore((state) => state.setNewGroupID);
@@ -136,7 +153,7 @@ export function useAddToUserQ() {
     SetAddGroup,
   };
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
 export function useAddToGroupMembersQ() {
   const CurrentUserID = UserIDStore((state) => state.id);
   const CurrentgroupID = UserIDStore((state) => state.newGroupID);
@@ -171,6 +188,8 @@ export function useAddToGroupMembersQ() {
   }, [data]);
   return { toggleFetch };
 }
+
+////////////////////////////////////////////////////////////////////////////
 export function usePostMessageQ(textInput: string) {
   const [buttonClicked, setClicked] = useState(false);
   const GroupID = useSwitcherStore((state) => state.code);
@@ -207,6 +226,8 @@ export function usePostMessageQ(textInput: string) {
 
   return { RepostMessage, setClicked, buttonClicked };
 }
+
+////////////////////////////////////////////////////////////////////////////////////
 export function useGetGroupIDQ(roomName: string, passcode: string) {
   const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
   const [triggerGroupIdFetch, toggleFetch] = useState(false);

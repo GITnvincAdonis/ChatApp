@@ -1,17 +1,19 @@
+const token = localStorage.getItem("jwt");
+
 export const LoginEndpoint = async (
   username: string,
   user_password: string
 ) => {
   try {
-    const user = await fetch(
-      `${
-        import.meta.env.VITE_END_POINT
-      }/users/login?username=${username}&user_password=${user_password}`
-    );
+    const user = await fetch(`${import.meta.env.VITE_END_POINT}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, user_password }),
+    });
 
     const response = await user.json();
-    console.log(response.user.user_id);
-    return response.user.user_id;
+    console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
@@ -22,30 +24,56 @@ export const SignUpEndpoint = async (
   user_password: string
 ) => {
   try {
-    const user = await fetch(`${import.meta.env.VITE_END_POINT}/users`, {
+    const user = await fetch(`${import.meta.env.VITE_END_POINT}/api/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, user_password }),
     });
 
     const response = await user.json();
-    console.log(response.user_id);
-    return response.user_id;
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const TokenUserInfo = async () => {
+  try {
+    const user = await fetch(`${import.meta.env.VITE_END_POINT}/api/token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const response = await user.json();
+    console.log(response);
+    return response;
   } catch (error) {
     console.log(error);
   }
 };
 
 export const GetAllGroups = async (userID: string) => {
+  console.log(`the id ${userID}`);
   try {
-    console.log(userID);
     const userGroups = await fetch(
-      `${import.meta.env.VITE_END_POINT}/groups/group_data?user_id=${userID}`
+      `${import.meta.env.VITE_END_POINT}/groups/group_data`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userID }),
+      }
     );
     const response = await userGroups.json();
 
-    console.log(response);
-    return response;
+    console.log(response.groups);
+    return response.groups;
   } catch (error) {
     console.log(error);
   }
@@ -59,7 +87,10 @@ export const AddToGroupsEP = async (
   try {
     const userGroups = await fetch(`${import.meta.env.VITE_END_POINT}/groups`, {
       method: "POST",
-      headers: { "Content-type": "application/json" },
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ chat_name, chat_password }),
     });
     const response = await userGroups.json();
@@ -79,7 +110,10 @@ export const AddToGroupMembersEP = async (
       `${import.meta.env.VITE_END_POINT}/groups/group_member`,
       {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ user_id, group_id }),
       }
     );
@@ -107,7 +141,10 @@ export const PostMessage = async (
       `${import.meta.env.VITE_END_POINT}/messages`,
       {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ text, user_id, group_id }),
       }
     );
@@ -140,11 +177,13 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
       `${import.meta.env.VITE_END_POINT}/groups/single_group_id`,
       {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ group_name, chat_password }),
       }
     );
-  
 
     return await userGroups.json();
   } catch (error) {
