@@ -194,3 +194,24 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
     throw error; // Rethrow the error for frontend handling
   }
 };
+export const GetGroupMembers = async (group_id: string) => {
+  try {
+    const userGroups = await fetch(
+      `${import.meta.env.VITE_END_POINT}/groups/get_group_members`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ group_id }),
+      }
+    );
+    const response = await userGroups.json();
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error in Getting group ID:", error);
+    throw error; // Rethrow the error for frontend handling
+  }
+};

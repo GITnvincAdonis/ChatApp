@@ -8,9 +8,11 @@ import {
 } from "@/components/ui/dialog";
 
 export function IntegratedModal(props: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trigger: any;
   header: string;
   tagline: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modalContent: any;
 }) {
   const { trigger, header, tagline, modalContent } = props;

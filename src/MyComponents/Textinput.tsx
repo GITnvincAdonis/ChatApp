@@ -20,6 +20,7 @@ export default function TextInput() {
   const AddToMessage = MessageStore((state) => state.UpdateMessage);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleServerMessage = (string: any) => {
       console.log(`${string.text} : from server`);
       AddToMessage(string.text, "left");

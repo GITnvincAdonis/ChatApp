@@ -1,57 +1,25 @@
-import { useEffect, useState } from "react";
 import { ScrollArea } from "../components/ui/scroll-area";
 import Chatters from "./Chatters";
 import { IntegratedPopover } from "./integratedComponents/IntegratedPopover";
 import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
 import { AntagBubble, ProtagBubble } from "./TextBubbles";
 import TextInput from "./Textinput";
-import { useQuery } from "@tanstack/react-query";
-import { GetGroupMessages } from "@/API endpoints/API";
 import { UserIDStore } from "@/STORES/userAuthStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import {
+  useGetGroupMembers,
+  useGetGroupMessages,
+} from "@/P_Clean Code Abstractions/tanStackQueries";
 
-interface Message {
-  message_id: string;
-  message_string: string;
-  message_senddate: string;
-  group_id: string;
-  user_id: string;
-}
 export default function ConversationPage() {
   const text = MessageStore((state) => state.MessageData);
   const CurrentGroupName = useSwitcherStore((state) => state.name);
   const CurrentGroupCode = useSwitcherStore((state) => state.code);
   const UserID = UserIDStore((state) => state.id);
-  const [OldMessages, SetOldMessages] = useState<Message[]>([]);
-  const [_messages, setMessages] = useState<Message[]>([]);
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["FetchedMessages", CurrentGroupCode],
-    queryFn: async () => {
-      const messages = await GetGroupMessages(CurrentGroupCode);
-      return messages; // Ensure this returns the correct data type
-    },
-    enabled: CurrentGroupCode != "",
-    staleTime: Infinity,
-  });
-  if (isError) console.error(error);
-  if (isLoading) console.log("loading previous mesages");
-  useEffect(() => {
-    if (data) {
-      SetOldMessages(data);
-    }
-  }, [data]);
 
-  useEffect(() => {
-    if (data) {
-      const uniqueMessages = new Map(); // Prevent duplicates
-      [...data, ...text].forEach((msg) => {
-        uniqueMessages.set(msg.message_id, msg);
-      });
-      setMessages(Array.from(uniqueMessages.values()));
-    }
-  }, [data]);
-
+  const { OldMessages } = useGetGroupMessages();
+  const { fetchMembers } = useGetGroupMembers();
   const navigate = useNavigate();
   if (!CurrentGroupCode) navigate("/home");
   return (
@@ -75,7 +43,11 @@ export default function ConversationPage() {
                 <h1 className="text-4xl font-bold font-Geist">
                   {CurrentGroupName}
                 </h1>
-                <h1 className="text-xl font-mono">{CurrentGroupCode}</h1>
+                <h1 className="text-xl font-mono">
+                  {fetchMembers.map((item) => {
+                    return <>{item.username}</>;
+                  })}
+                </h1>
               </div>
             </div>
           </div>

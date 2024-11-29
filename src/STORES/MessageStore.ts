@@ -19,7 +19,7 @@ export const MessageStore = create<storeType>((set) => ({
 ///////////////////////////////////////////////////
 interface Group {
   group_name: string;
-  description: string;
+  groupID: string;
 }
 
 interface GroupStoreType {
@@ -30,7 +30,7 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
   groups: [],
   UpdateGroups(name: string, desc: string) {
     set((state) => ({
-      groups: [...state.groups, { group_name: name, description: desc }],
+      groups: [...state.groups, { group_name: name, groupID: desc }],
     }));
   },
 }));

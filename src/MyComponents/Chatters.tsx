@@ -2,61 +2,13 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  useFetchedGroupsStore,
-  useGroupStore,
-  useSwitcherStore,
-} from "../STORES/MessageStore";
-import { useEffect, useState } from "react";
-import { GetAllGroups } from "@/API endpoints/API";
-import { useQuery } from "@tanstack/react-query";
+import { useGroupStore } from "../STORES/MessageStore";
 
-interface GroupData {
-  group_id: string;
-  group_name: string;
-  chat_password: string;
-  user_id: string;
-}
+import { useGetUserGroups } from "@/P_Clean Code Abstractions/tanStackQueries";
 
 export default function Chatters() {
   const Icons = useGroupStore((state) => state.groups);
-  const SetCurrentRoomInfo = useSwitcherStore((state) => state.SetCurrentRoom);
-
-  useEffect(() => {
-    console.log(Icons);
-  }, [Icons]);
-
-  const [returnedGroupData, setData] = useState<GroupData[]>([]);
-  //const [filtered, setFData] = useState<GroupData[]>([]);
-
-  const userID = JSON.parse(localStorage.getItem("userAuthData") || "{}");
-  const id = userID?.user?.user_id;
-  
-  const {
-    data: userdata,
-    isError,
-    error,
-    isLoading,
-  } = useQuery({
-    queryFn: () => GetAllGroups(id),
-    queryKey: ["user_Info"],
-  });
-  if (isLoading) console.log("loading cchats");
-  if (isError) console.log(error);
-
-  useEffect(() => {
-    if (userdata) {
-      setData(userdata);
-    }
-  }, [userdata]);
-  useEffect(() => {
-    returnedGroupData.map((item) => {
-      //console.log(item);
-      UpdateFetchedGroups(item.group_id, item.group_name, item.chat_password);
-    });
-  }, [returnedGroupData]);
-
-  const UpdateFetchedGroups = useFetchedGroupsStore((state) => state.SetGroups);
+  const { returnedGroupData, SetCurrentRoomInfo } = useGetUserGroups();
   const navigate = useNavigate();
   return (
     <>
@@ -98,7 +50,7 @@ export default function Chatters() {
                     className="flex  my-2 space-x-3"
                     onClick={() => {
                       console.log(item.group_name);
-                      SetCurrentRoomInfo(item.group_name, item.description);
+                      SetCurrentRoomInfo(item.group_name, item.groupID);
                     }}
                   >
                     <Profimage></Profimage>

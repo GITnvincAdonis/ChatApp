@@ -1,7 +1,10 @@
 import {
   AddToGroupMembersEP,
   AddToGroupsEP,
+  GetAllGroups,
   GetGroup,
+  GetGroupMembers,
+  GetGroupMessages,
   LoginEndpoint,
   PostMessage,
   SignUpEndpoint,
@@ -13,8 +16,33 @@ import {
   useSwitcherStore,
 } from "@/STORES/MessageStore";
 import { UserIDStore } from "@/STORES/userAuthStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+
+import { Member,GroupData,Message } from "./CustomTypes";
+
+
+function QUERYConstructor(Fn: CallableFunction, Params: string[], activationParam: boolean[],QKey:string)
+:{ data: any[]| any| undefined}{
+  const checks = activationParam.reduce((acc, current) => acc && current, true)
+  const { data, isLoading, isError, error } = useQuery({
+    queryFn: async () => {
+      return await Fn(...Params)},
+    queryKey: [`${QKey}`,...Params],
+    enabled: checks,
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  if(isError) console.log( `error at callbackfn ${Fn}: ${error}`);
+  if (isLoading) console.log( `loading ${Fn}`);
+  return {data}
+}
+
+
+
+
+
 
 export function useSignUpAddUserQ() {
   const [signInData, SetSignInData] = useState<{
@@ -23,15 +51,8 @@ export function useSignUpAddUserQ() {
   }>({ name: "", passcode: "" });
 
   const [clicked, SetClicked] = useState(false);
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: async () => SignUpEndpoint(signInData.name, signInData.passcode),
-    queryKey: ["user_id"],
-    enabled: clicked,
-  });
-
-  if (isError) console.log(error);
-  if (isLoading) console.log("loading UserID");
-
+  const {data} = QUERYConstructor(SignUpEndpoint,[signInData.name, signInData.passcode],[clicked],"user_id")
+ 
   useEffect(() => {
     console.log(data != undefined);
     if (data && clicked) {
@@ -50,15 +71,7 @@ export function useLoginGetUserQ() {
   }>({ name: "", passcode: "" });
 
   const [clicked, SetClicked] = useState(false);
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: async () => LoginEndpoint(LoginInData.name, LoginInData.passcode),
-    queryKey: ["user_id"],
-    enabled: clicked,
-  });
-
-  if (isError) console.log(error);
-  if (isLoading) console.log("loading UserID");
-
+  const {data} = QUERYConstructor(LoginEndpoint,[LoginInData.name, LoginInData.passcode],[clicked],"user_id");
   useEffect(() => {
     console.log(`login ${data}`);
     if (data && clicked) {
@@ -72,14 +85,8 @@ export function useLoginGetUserQ() {
 export function useTokenRetrieve() {
   const token = localStorage.getItem("jwt");
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryFn: async () => TokenUserInfo(),
-    queryKey: ["user_information"],
-    enabled: token != null,
-  });
-
-  if (isError) console.log(error);
-  if (isLoading) console.log("loading UserID");
+  const {data} = QUERYConstructor(TokenUserInfo,[],[token != null], "user_information")
+  
   const SetStoreUserID = UserIDStore((state) => state.ChangeID);
   const SetStoreUserName = UserIDStore((state) => state.ChangeName);
 
@@ -104,47 +111,20 @@ export function useTokenRetrieve() {
 }
 /////////////////////////////////////////////////////////////////////////////
 export function useAddToUserQ() {
-  const queryClient = useQueryClient();
   const UpdateCurrentNewGroupID = UserIDStore((state) => state.setNewGroupID);
 
   const [newroomName, setNewRoomName] = useState("");
   const [newpasscode, setNewPassCode] = useState("");
   const [clickedAddGroup, SetAddGroup] = useState(false);
-  const {
-    data: ReturnedGroupPost,
-    isError: isError2,
-    isLoading: isLoading2,
-    error: error2,
-  } = useQuery({
-    queryFn: async () => AddToGroupsEP(newroomName, newpasscode),
-    queryKey: ["newGroup", newroomName, newpasscode],
-    enabled: clickedAddGroup && newroomName != "" && newpasscode != null,
-  });
-  const { mutateAsync } = useMutation({
-    mutationFn: async () => {
-      console.log("mutateat");
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["newGroup", newroomName, newpasscode],
-        exact: true, // Ensures only the exact query key is invalidated
-      });
-    },
-  });
-  if (isError2) console.log(error2);
-  if (isLoading2) console.log("loading");
 
+  const {data:ReturnedGroupPost}= QUERYConstructor(AddToGroupsEP,[newroomName, newpasscode],[clickedAddGroup ,newroomName != "" ,newpasscode != null],"newGroup")
+    
   useEffect(() => {
     if (ReturnedGroupPost != "" && ReturnedGroupPost != undefined)
       UpdateCurrentNewGroupID(ReturnedGroupPost);
   }, [ReturnedGroupPost]);
 
-  const newGroupID = UserIDStore((state) => state.newGroupID);
-  useEffect(() => {
-    console.log(`creating group `);
-  }, [newGroupID]);
   return {
-    mutateAsync,
     newroomName,
     newpasscode,
     clickedAddGroup,
@@ -160,27 +140,13 @@ export function useAddToGroupMembersQ() {
   const CurrentgroupID = UserIDStore((state) => state.newGroupID);
   const [canFetchGRPMEM, toggleFetch] = useState(false);
   const [GroupName, setName] = useState<string>("");
-  const {
-    data,
-    isError: isError2,
-    isLoading: isLoading2,
-    error: error2,
-  } = useQuery({
-    queryFn: async () => {
-      console.log(CurrentgroupID);
-      return await AddToGroupMembersEP(CurrentgroupID, CurrentUserID);
-    },
-    queryKey: ["newGroupMember", CurrentgroupID, CurrentUserID],
-    enabled:
-      canFetchGRPMEM &&
-      GroupName != "" &&
-      CurrentgroupID != undefined &&
-      CurrentgroupID != "" &&
-      CurrentUserID != "",
-    retry: false,
-  });
-  if (isError2) console.log(error2);
-  if (isLoading2) console.log("loading");
+
+  const {data} = QUERYConstructor(AddToGroupMembersEP,[CurrentgroupID, CurrentUserID],[
+    canFetchGRPMEM ,
+    GroupName != "" ,
+    CurrentgroupID != undefined ,
+    CurrentgroupID != "" ,
+    CurrentUserID != ""],'newGroupMember')
 
   useEffect(() => {
     console.log(`creating group member ${data}`);
@@ -201,36 +167,13 @@ export function usePostMessageQ(textInput: string) {
   const GroupID = useSwitcherStore((state) => state.code);
   const UserID = UserIDStore((state) => state.id);
 
-  const queryClient = useQueryClient();
+  const {data} = QUERYConstructor(PostMessage,[textInput, GroupID, UserID],[buttonClicked ,textInput !== ""],'messages')
 
-  const { data, isLoading, error, isError } = useQuery({
-    queryFn: async () => {
-      return await PostMessage(textInput, GroupID, UserID); // Ensure this returns a value
-    },
-    queryKey: ["messages", textInput, GroupID, UserID],
-    enabled: buttonClicked && textInput !== "",
-  });
-
-  const { mutateAsync: RepostMessage } = useMutation({
-    mutationFn: async () => {
-      setClicked(false);
-      console.log("mutated message post");
-      // Include mutation logic here if needed
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["messages", textInput, GroupID, UserID],
-        exact: true,
-      }),
-  });
-
-  if (isError) console.error(error);
-  if (isLoading) console.log("loading message return");
   useEffect(() => {
     if (data) console.log(data);
   }, [data]);
 
-  return { RepostMessage, setClicked, buttonClicked };
+  return { setClicked, buttonClicked };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -239,19 +182,9 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
   const [triggerGroupIdFetch, toggleFetch] = useState(false);
   const SetGroupID = UserIDStore((state) => state.setNewGroupID);
   const FetchedGroups = useFetchedGroupsStore((state) => state.group);
-  const { data, isError, error, isLoading } = useQuery({
-    queryFn: async () => {
-      return await GetGroup(roomName, passcode);
-    },
-    queryKey: ["join-unknown-group", roomName, passcode],
-    enabled: triggerGroupIdFetch,
-    staleTime: Infinity,
-    retry: false,
-  });
-  if (isError && error.message === "group not found")
-    console.log("GROUP ISNT AVAILABLE");
-  if (isLoading) console.log("loading");
 
+  const {data} = QUERYConstructor(GetGroup, [roomName, passcode],[triggerGroupIdFetch],'join-unknown-group')
+  
   useEffect(() => {
     // console.log(error);
     if (data) {
@@ -269,4 +202,63 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
     }
   }, [data]);
   return { toggleFetch };
+}
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+export function useGetGroupMessages() {
+  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const [OldMessages, SetOldMessages] = useState<Message[]>([]);
+
+  const {data}= QUERYConstructor(GetGroupMessages,[CurrentGroupCode],[ CurrentGroupCode != ""], "FetchedMessages" )
+  
+  useEffect(() => {
+    if (data) {
+      SetOldMessages(data);
+    }
+  }, [data]);
+  return { OldMessages };
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function useGetGroupMembers() {
+  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const [fetchMembers, SetMembers] = useState<Member[]>([]);
+
+  const {data:GroupMembers} = QUERYConstructor(GetGroupMembers, [CurrentGroupCode],[CurrentGroupCode != ''],"group_members")
+
+  useEffect(() => {
+    if (GroupMembers) {
+      console.log(GroupMembers.members);
+      SetMembers(GroupMembers.members);
+    }
+  }, [GroupMembers]);
+  return { fetchMembers };
+}
+///////////////////////////////////////////////////////////////////////////////////
+
+export function useGetUserGroups() {
+  const SetCurrentRoomInfo = useSwitcherStore((state) => state.SetCurrentRoom);
+  const UpdateFetchedGroups = useFetchedGroupsStore((state) => state.SetGroups);
+  const [returnedGroupData, setData] = useState<GroupData[]>([]);
+
+  const userID = JSON.parse(localStorage.getItem("userAuthData") || "{}");
+  const id = userID?.user?.user_id;
+
+  const {data: userdata} = QUERYConstructor(GetAllGroups, [id], [],'user_Info' )
+    
+  useEffect(() => {
+    if (userdata) {
+      setData(userdata);
+    }
+  }, [userdata]);
+
+  useEffect(() => {
+    returnedGroupData.map((item) => {
+      //console.log(item);
+      UpdateFetchedGroups(item.group_id, item.group_name, item.chat_password);
+    });
+  }, [returnedGroupData]);
+
+  return { returnedGroupData,SetCurrentRoomInfo };
 }
