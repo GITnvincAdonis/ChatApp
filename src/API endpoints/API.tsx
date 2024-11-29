@@ -12,7 +12,7 @@ export const LoginEndpoint = async (
     });
 
     const response = await user.json();
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -31,7 +31,7 @@ export const SignUpEndpoint = async (
     });
 
     const response = await user.json();
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -49,7 +49,7 @@ export const TokenUserInfo = async () => {
     });
 
     const response = await user.json();
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -123,8 +123,10 @@ export const AddToGroupMembersEP = async (
       const errorData = await response.json(); // Parse error message
       throw new Error(errorData.message || "Error adding member to group");
     }
+    const Parsedresponse = await response.json();
 
-    return await response.json();
+    console.log(Parsedresponse);
+    return Parsedresponse;
   } catch (error) {
     console.error("Error in AddToGroupMembersEP:", error);
     throw error; // Rethrow the error for frontend handling
@@ -150,7 +152,7 @@ export const PostMessage = async (
     );
     const response = await userGroups.json();
 
-    console.log(response.message_id);
+    //console.log(response.message_id);
     return response;
   } catch (error) {
     console.log(error);
@@ -184,8 +186,9 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
         body: JSON.stringify({ group_name, chat_password }),
       }
     );
-
-    return await userGroups.json();
+    const response = await userGroups.json();
+    console.log(response);
+    return response;
   } catch (error) {
     console.error("Error in Getting group ID:", error);
     throw error; // Rethrow the error for frontend handling

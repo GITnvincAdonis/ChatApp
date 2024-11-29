@@ -1,4 +1,4 @@
-import { PlusIcon, SendIcon, UsersRound } from "lucide-react";
+import { PlusIcon, UsersRound } from "lucide-react";
 import { IntegratedModal } from "@/MyComponents/integratedComponents/IntegratedModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -6,7 +6,6 @@ import { IntegratedPopover } from "@/MyComponents/integratedComponents/Integrate
 import { PlayCarousel } from "@/MyComponents/integratedComponents/PlayingCarousel";
 import { io } from "socket.io-client";
 import {
-  AcModal1,
   AcModal2,
   AcModal3,
 } from "../P_Clean Code Abstractions/ModelActivatedContent";
@@ -19,11 +18,11 @@ socket.on("connect", () => {
 
 export default function IntroToChat() {
   const ModalOptions = [
-    {
-      header: "One-on-One",
-      tag: "Chat privately with an individual",
-      modalContent: <AcModal1></AcModal1>,
-    },
+    // {
+    //   header: "One-on-One",
+    //   tag: "Chat privately with an individual",
+    //   modalContent: <AcModal1></AcModal1>,
+    // },
     {
       header: "Connect to Chat Room",
       tag: "Group conversation between multiple people",
@@ -106,11 +105,11 @@ function Background() {
   );
 }
 const CardOptions = [
-  {
-    text: "START A PRVIATE CONVERSATION",
-    tagline: "Start a chat with a co-worker or friend",
-    icon: <SendIcon color="white" size={40}></SendIcon>,
-  },
+  // {
+  //   text: "START A PRIVATE CONVERSATION",
+  //   tagline: "Start a chat with a co-worker or friend",
+  //   icon: <SendIcon color="white" size={40}></SendIcon>,
+  // },
   {
     text: "JOIN A PUBLIC CHAT ROOM",
     tagline: "have a group with individuals over a shared connection",

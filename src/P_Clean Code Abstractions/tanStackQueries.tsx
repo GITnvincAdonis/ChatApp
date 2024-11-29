@@ -155,10 +155,11 @@ export function useAddToUserQ() {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////
 export function useAddToGroupMembersQ() {
+  const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
   const CurrentUserID = UserIDStore((state) => state.id);
   const CurrentgroupID = UserIDStore((state) => state.newGroupID);
   const [canFetchGRPMEM, toggleFetch] = useState(false);
-
+  const [GroupName, setName] = useState<string>("");
   const {
     data,
     isError: isError2,
@@ -172,6 +173,7 @@ export function useAddToGroupMembersQ() {
     queryKey: ["newGroupMember", CurrentgroupID, CurrentUserID],
     enabled:
       canFetchGRPMEM &&
+      GroupName != "" &&
       CurrentgroupID != undefined &&
       CurrentgroupID != "" &&
       CurrentUserID != "",
@@ -185,8 +187,12 @@ export function useAddToGroupMembersQ() {
   }, [data]);
   useEffect(() => {
     console.log(CurrentgroupID);
+    if (data) {
+      console.log(data.data.group_id);
+      UpdateChatList(GroupName, data.data.group_id);
+    }
   }, [data]);
-  return { toggleFetch };
+  return { toggleFetch, setName };
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -249,7 +255,8 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
   useEffect(() => {
     // console.log(error);
     if (data) {
-      SetGroupID(data);
+      console.log(data.group_ID);
+      SetGroupID(data.group_ID);
       FetchedGroups.map((item) => {
         console.log(item.group_id);
         console.log(data);
@@ -258,9 +265,8 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
         (item) => item.group_id === data
       );
       console.log(alreadyPreset);
-      if (!alreadyPreset) UpdateChatList(roomName, data);
+      if (!alreadyPreset) UpdateChatList(roomName, data.group_ID);
     }
-    console.log(`Joined group  ${data}`);
   }, [data]);
   return { toggleFetch };
 }

@@ -14,6 +14,8 @@ import {
   PersonStandingIcon,
   SettingsIcon,
 } from "lucide-react";
+import { IntegratedModal } from "./IntegratedModal";
+import { useNavigate } from "react-router-dom";
 
 export function IntegratedPopover() {
   useTokenRetrieve();
@@ -36,7 +38,7 @@ export function IntegratedPopover() {
           <div className="flex flex-col items-end space-y-0 mx-4">
             {PopoverOptions.map((item, index) => {
               return (
-                <Button key={index} className="w-max m-2">
+                <Button key={index} className="w-max m-2 p-0">
                   {item.content}
                 </Button>
               );
@@ -51,7 +53,7 @@ const DarkToggle = () => {
   const root = document.documentElement;
 
   return (
-    <div className="flex items-center space-x-2 ">
+    <div className="flex items-center space-x-2 p-3 ">
       <Switch
         onClick={() => {
           if (root.classList.contains("dark")) root.classList.remove("dark");
@@ -64,7 +66,33 @@ const DarkToggle = () => {
 };
 
 const SignOut = () => {
-  return <LogOutIcon />;
+  const navigate = useNavigate();
+  return (
+    <IntegratedModal
+      header="Confirm Sign-Out"
+      trigger={
+        <div className="w-full  p-2 px-4">
+          <LogOutIcon />
+        </div>
+      }
+      tagline=""
+      modalContent={
+        <>
+          <div className="w-full space-x-2 grid">
+            <Button
+              onClick={() => {
+                localStorage.clear();
+                navigate("/");
+              }}
+              className="outline-dashed outline-1 bg-white text-black"
+            >
+              sign up
+            </Button>
+          </div>
+        </>
+      }
+    />
+  );
 };
 const PopoverOptions = [
   {

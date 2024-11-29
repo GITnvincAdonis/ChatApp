@@ -3,7 +3,6 @@ import { SearchBox } from "../MyComponents/integratedComponents/SearchBox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useGroupStore } from "@/STORES/MessageStore";
 import {
   useAddToGroupMembersQ,
   useAddToUserQ,
@@ -17,7 +16,7 @@ export function AcModal2() {
   const [roomName, setRoomName] = useState("");
   const [passcode, setPassCode] = useState("");
   const { toggleFetch } = useGetGroupIDQ(roomName, passcode);
-  const { toggleFetch: AddGrpMem } = useAddToGroupMembersQ();
+  const { toggleFetch: AddGrpMem, setName } = useAddToGroupMembersQ();
 
   return (
     <div className="py-4">
@@ -53,6 +52,7 @@ export function AcModal2() {
         onMouseDown={() => {
           toggleFetch(true);
           AddGrpMem(true);
+          setName(roomName);
         }}
         onMouseUp={() => {
           toggleFetch(false);
@@ -65,7 +65,6 @@ export function AcModal2() {
   );
 }
 export function AcModal3() {
-  const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
   const {
     setNewPassCode,
     setNewRoomName,
@@ -73,7 +72,7 @@ export function AcModal3() {
     newpasscode,
     newroomName,
   } = useAddToUserQ();
-  const { toggleFetch } = useAddToGroupMembersQ();
+  const { toggleFetch, setName } = useAddToGroupMembersQ();
   return (
     <div className="py-4">
       <div className="flex flex-col items-center gap-2">
@@ -107,7 +106,7 @@ export function AcModal3() {
         onMouseDown={() => {
           console.log(newroomName);
           SetAddGroup(true);
-          UpdateChatList(newroomName, newpasscode);
+          setName(newroomName);
           toggleFetch(true);
         }}
         onMouseUp={() => {

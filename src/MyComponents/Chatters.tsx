@@ -31,8 +31,7 @@ export default function Chatters() {
 
   const userID = JSON.parse(localStorage.getItem("userAuthData") || "{}");
   const id = userID?.user?.user_id;
-  console.log(id);
-
+  
   const {
     data: userdata,
     isError,
@@ -52,7 +51,7 @@ export default function Chatters() {
   }, [userdata]);
   useEffect(() => {
     returnedGroupData.map((item) => {
-      console.log(item);
+      //console.log(item);
       UpdateFetchedGroups(item.group_id, item.group_name, item.chat_password);
     });
   }, [returnedGroupData]);

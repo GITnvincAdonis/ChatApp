@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetGroupMessages } from "@/API endpoints/API";
 import { UserIDStore } from "@/STORES/userAuthStore";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   message_id: string;
@@ -30,6 +31,7 @@ export default function ConversationPage() {
       const messages = await GetGroupMessages(CurrentGroupCode);
       return messages; // Ensure this returns the correct data type
     },
+    enabled: CurrentGroupCode != "",
     staleTime: Infinity,
   });
   if (isError) console.error(error);
@@ -49,6 +51,9 @@ export default function ConversationPage() {
       setMessages(Array.from(uniqueMessages.values()));
     }
   }, [data]);
+
+  const navigate = useNavigate();
+  if (!CurrentGroupCode) navigate("/home");
   return (
     <>
       <motion.div
