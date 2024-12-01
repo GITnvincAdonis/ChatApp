@@ -63,7 +63,8 @@ export default function ConversationPage() {
                   {fetchMembers.map((item, index) => {
                     return (
                       <>
-                        {item.username}{index == fetchMembers.length - 1 ? "" : ", "}
+                        {item.username}
+                        {index == fetchMembers.length - 1 ? "" : ", "}
                       </>
                     );
                   })}
@@ -133,8 +134,7 @@ function Background() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="absolute inset-0  bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:26px_24px] z-0"
+          className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:25px_25px] z-0"
         ></motion.div>
       </AnimatePresence>
     </>
