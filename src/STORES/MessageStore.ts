@@ -7,6 +7,7 @@ type ChatMessage = {
 interface storeType {
   MessageData: ChatMessage[];
   UpdateMessage: (input: string, side: "right" | "left") => void;
+  ClearMessage: ()=> void;
 }
 export const MessageStore = create<storeType>((set) => ({
   MessageData: [],
@@ -15,6 +16,9 @@ export const MessageStore = create<storeType>((set) => ({
       MessageData: [...state.MessageData, { value: input, side: side }],
     }));
   },
+  ClearMessage: ()=> {
+    set(() => ({MessageData: []})); //
+  }
 }));
 ///////////////////////////////////////////////////
 interface Group {
@@ -62,6 +66,7 @@ interface FetchedGroups {
     group_name: string,
     chat_password: string
   ) => void;
+  
 }
 
 export const useFetchedGroupsStore = create<FetchedGroups>((set) => ({

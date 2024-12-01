@@ -11,14 +11,13 @@ import {
   useGetGroupMembers,
   useGetGroupMessages,
 } from "@/P_Clean Code Abstractions/tanStackQueries";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef} from "react";
 
 export default function ConversationPage() {
   const text = MessageStore((state) => state.MessageData);
   const CurrentGroupName = useSwitcherStore((state) => state.name);
   const CurrentGroupCode = useSwitcherStore((state) => state.code);
   const UserID = UserIDStore((state) => state.id);
-
   const { OldMessages } = useGetGroupMessages();
   const { fetchMembers } = useGetGroupMembers();
   const navigate = useNavigate();
@@ -38,6 +37,7 @@ export default function ConversationPage() {
       }
     }
   }, [text, OldMessages]);
+
   return (
     <>
       <motion.div
