@@ -11,6 +11,7 @@ import {
   useGetGroupMembers,
   useGetGroupMessages,
 } from "@/P_Clean Code Abstractions/tanStackQueries";
+import { useEffect, useRef } from "react";
 
 export default function ConversationPage() {
   const text = MessageStore((state) => state.MessageData);
@@ -22,6 +23,21 @@ export default function ConversationPage() {
   const { fetchMembers } = useGetGroupMembers();
   const navigate = useNavigate();
   if (!CurrentGroupCode) navigate("/home");
+
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollableElement = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      );
+      if (scrollableElement) {
+        console.log("found scrollable element");
+        console.log(scrollableElement);
+        scrollableElement.scrollTop += scrollableElement.scrollHeight;
+      }
+    }
+  }, [text, OldMessages]);
   return (
     <>
       <motion.div
@@ -44,15 +60,23 @@ export default function ConversationPage() {
                   {CurrentGroupName}
                 </h1>
                 <h1 className="text-xl font-mono">
-                  {fetchMembers.map((item) => {
-                    return <>{item.username}</>;
+                  {fetchMembers.map((item, index) => {
+                    return (
+                      <>
+                        {item.username}{index == fetchMembers.length - 1 ? "" : ", "}
+                      </>
+                    );
                   })}
                 </h1>
               </div>
             </div>
           </div>
           <div className=" h-auto flex justify-center">
-            <ScrollArea className="w-full px-[20%] flex h-[42rem] flex-col space-y-1">
+            <ScrollArea
+              ref={scrollAreaRef}
+              type="always"
+              className="w-full px-[20%] flex h-[42rem] flex-col space-y-1"
+            >
               {OldMessages.map((item, index) => {
                 return (
                   <div key={index}>

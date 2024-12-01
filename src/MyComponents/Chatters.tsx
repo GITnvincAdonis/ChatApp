@@ -21,7 +21,7 @@ export default function Chatters() {
                   navigate("/home");
                 }}
                 className={
-                  "w-full h-full  border-2 border-dashed p-2 shadow-3xl shadow-black border-black rounded-lg "
+                  "w-12 h-12  border-2 border-dashed p-2 shadow-3xl shadow-black border-black rounded-lg "
                 }
                 size={30}
                 strokeWidth={1}

@@ -20,10 +20,11 @@ import {  useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { Member,GroupData,Message } from "./CustomTypes";
+import { toast } from "sonner";
 
 
 function QUERYConstructor(Fn: CallableFunction, Params: string[], activationParam: boolean[],QKey:string)
-:{ data: any[]| any| undefined}{
+:{ data: any[]| any| undefined, isError: boolean, error:Error|null}{
   const checks = activationParam.reduce((acc, current) => acc && current, true)
   const { data, isLoading, isError, error } = useQuery({
     queryFn: async () => {
@@ -35,8 +36,8 @@ function QUERYConstructor(Fn: CallableFunction, Params: string[], activationPara
   });
 
   if(isError) console.log( `error at callbackfn ${Fn}: ${error}`);
-  if (isLoading) console.log( `loading ${Fn}`);
-  return {data}
+  if (isLoading) console.log( `loading ${Fn.name}`);
+  return {data, isError, error}
 }
 
 
@@ -112,16 +113,26 @@ export function useTokenRetrieve() {
 /////////////////////////////////////////////////////////////////////////////
 export function useAddToUserQ() {
   const UpdateCurrentNewGroupID = UserIDStore((state) => state.setNewGroupID);
-
+  const Groups = useFetchedGroupsStore(state=>state.group )
   const [newroomName, setNewRoomName] = useState("");
   const [newpasscode, setNewPassCode] = useState("");
   const [clickedAddGroup, SetAddGroup] = useState(false);
 
-  const {data:ReturnedGroupPost}= QUERYConstructor(AddToGroupsEP,[newroomName, newpasscode],[clickedAddGroup ,newroomName != "" ,newpasscode != null],"newGroup")
-    
+  const {data:ReturnedGroupPost,error}= QUERYConstructor(AddToGroupsEP,[newroomName, newpasscode],[clickedAddGroup ,newroomName != "" ,newpasscode != null],"newGroup")
+   
   useEffect(() => {
-    if (ReturnedGroupPost != "" && ReturnedGroupPost != undefined)
-      UpdateCurrentNewGroupID(ReturnedGroupPost);
+    if (ReturnedGroupPost != "" && ReturnedGroupPost != undefined){
+      const alreadyInGroup = Groups.some(g =>g.group_name === newroomName)
+      if(!alreadyInGroup){
+        console.log(Groups);
+        
+        UpdateCurrentNewGroupID(ReturnedGroupPost)
+        toast("Successfully created group.");
+      } else toast.error("Group already exists.");
+      }
+      
+    if(error)console.log(error);
+   
   }, [ReturnedGroupPost]);
 
   return {
@@ -141,7 +152,7 @@ export function useAddToGroupMembersQ() {
   const [canFetchGRPMEM, toggleFetch] = useState(false);
   const [GroupName, setName] = useState<string>("");
 
-  const {data} = QUERYConstructor(AddToGroupMembersEP,[CurrentgroupID, CurrentUserID],[
+  const {data,isError} = QUERYConstructor(AddToGroupMembersEP,[CurrentgroupID, CurrentUserID],[
     canFetchGRPMEM ,
     GroupName != "" ,
     CurrentgroupID != undefined ,
@@ -151,12 +162,14 @@ export function useAddToGroupMembersQ() {
   useEffect(() => {
     console.log(`creating group member ${data}`);
   }, [data]);
+
   useEffect(() => {
     console.log(CurrentgroupID);
     if (data) {
       console.log(data.data.group_id);
-      UpdateChatList(GroupName, data.data.group_id);
+      if(!isError)UpdateChatList(GroupName, data.data.group_id);
     }
+   
   }, [data]);
   return { toggleFetch, setName };
 }
@@ -183,22 +196,16 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
   const SetGroupID = UserIDStore((state) => state.setNewGroupID);
   const FetchedGroups = useFetchedGroupsStore((state) => state.group);
 
-  const {data} = QUERYConstructor(GetGroup, [roomName, passcode],[triggerGroupIdFetch],'join-unknown-group')
+  const {data,isError} = QUERYConstructor(GetGroup, [roomName, passcode],[triggerGroupIdFetch],'join-unknown-group')
   
   useEffect(() => {
-    // console.log(error);
+  
     if (data) {
-      console.log(data.group_ID);
       SetGroupID(data.group_ID);
-      FetchedGroups.map((item) => {
-        console.log(item.group_id);
-        console.log(data);
-      });
-      const alreadyPreset = FetchedGroups.find(
-        (item) => item.group_id === data
-      );
+
+      const alreadyPreset = FetchedGroups.some(group => group.group_id === data.group_ID);
       console.log(alreadyPreset);
-      if (!alreadyPreset) UpdateChatList(roomName, data.group_ID);
+      if (alreadyPreset === undefined && !isError ) UpdateChatList(roomName, data.group_ID);
     }
   }, [data]);
   return { toggleFetch };

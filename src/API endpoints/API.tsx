@@ -1,3 +1,6 @@
+import { XCircle } from "lucide-react";
+import { toast } from "sonner";
+
 const token = localStorage.getItem("jwt");
 
 export const LoginEndpoint = async (
@@ -15,6 +18,7 @@ export const LoginEndpoint = async (
     //console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -34,6 +38,7 @@ export const SignUpEndpoint = async (
     //console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -52,6 +57,7 @@ export const TokenUserInfo = async () => {
     //console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -75,6 +81,7 @@ export const GetAllGroups = async (userID: string) => {
     console.log(response.groups);
     return response.groups;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -97,6 +104,7 @@ export const AddToGroupsEP = async (
     console.log(response.group_ID.group_id);
     return response.group_ID.group_id;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -128,6 +136,7 @@ export const AddToGroupMembersEP = async (
     console.log(Parsedresponse);
     return Parsedresponse;
   } catch (error) {
+    showCustomErrorToast(error)
     console.error("Error in AddToGroupMembersEP:", error);
     throw error; // Rethrow the error for frontend handling
   }
@@ -155,6 +164,7 @@ export const PostMessage = async (
     //console.log(response.message_id);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -169,6 +179,7 @@ export const GetGroupMessages = async (group_id: string) => {
     console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.log(error);
   }
 };
@@ -190,6 +201,7 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
     console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.error("Error in Getting group ID:", error);
     throw error; // Rethrow the error for frontend handling
   }
@@ -211,7 +223,23 @@ export const GetGroupMembers = async (group_id: string) => {
     console.log(response);
     return response;
   } catch (error) {
+    showCustomErrorToast(error)
     console.error("Error in Getting group ID:", error);
     throw error; // Rethrow the error for frontend handling
   }
+};
+const showCustomErrorToast = (Text: any) => {
+  toast.error("Error Occurred", {
+    description: `${Text}`,
+    duration: 6000,
+    icon: <XCircle className="h-5 w-5 text-red-500" />,
+    style: {
+      background: "#FEE2E2",
+      border: "1px solid #FCA5A5",
+      color: "#7F1D1D",
+    },
+    className: "my-custom-error-toast",
+    position: "bottom-right",
+    closeButton: true,
+  });
 };

@@ -6,12 +6,13 @@ import SignInPage from "./MyComponents/SignInPage";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
-
+import { Toaster } from "@/components/ui/sonner";
 const Client = new QueryClient();
 
 function App() {
   return (
     <>
+      <Toaster />
       <QueryClientProvider client={Client}>
         <AnimatePresence mode="wait">
           <Routes>
