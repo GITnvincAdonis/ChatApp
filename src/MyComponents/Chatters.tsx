@@ -9,7 +9,6 @@ import {
 } from "../STORES/MessageStore";
 
 import { useGetUserGroups } from "@/P_Clean Code Abstractions/tanStackQueries";
-import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function Chatters() {
