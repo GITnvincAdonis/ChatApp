@@ -5,7 +5,7 @@ import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
 import { AntagBubble, ProtagBubble } from "./TextBubbles";
 import TextInput from "./Textinput";
 import { UserIDStore } from "@/STORES/userAuthStore";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   useGetGroupMembers,
@@ -45,22 +45,23 @@ export default function ConversationPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className=" h-screen flex"
+        className="flex  h-screen w-[100vw]"
       >
-        <Chatters></Chatters>
-        <div className="relative h-full w-full ">
-          <Background></Background>
-          <div className="relative flex flex-col z-10">
-            <div className="font-semibold flex  w-full items-start justify-end">
+        <div>
+          <Chatters></Chatters>
+        </div>
+        <div className="bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:25px_25px] z-0 w-full  ">
+          <div className="flex flex-col z-10">
+            <div className="font-semibold flex lg:px-4 items-start justify-end">
               <IntegratedPopover></IntegratedPopover>
             </div>
-            <div className=" flex items-center justify-center space-x-3">
-              <div className=" h-[6rem] aspect-square rounded-full bg-slate-900"></div>
+            <div className=" flex items-center justify-center space-x-3 px-2">
+              <div className=" lg:h-[6rem] h-[3.5rem] aspect-square rounded-full bg-slate-900"></div>
               <div>
                 <h1 className="text-4xl font-bold font-Geist">
                   {CurrentGroupName}
                 </h1>
-                <h1 className="text-xl font-mono">
+                <h1 className="lg:text-xl font-mono">
                   {fetchMembers.map((item, index) => {
                     return (
                       <>
@@ -77,7 +78,7 @@ export default function ConversationPage() {
             <ScrollArea
               ref={scrollAreaRef}
               type="always"
-              className="w-full px-[20%] flex h-[42rem] flex-col space-y-1"
+              className="w-full lg:px-[20%] flex lg:h-[45em] h-[75vh] flex-col space-y-1"
             >
               {OldMessages.map((item, index) => {
                 return (
@@ -119,25 +120,11 @@ export default function ConversationPage() {
               })}
             </ScrollArea>
           </div>
-          <div className="m-10 relative">
+          <div className=" ">
             <TextInput></TextInput>
           </div>
         </div>
       </motion.div>
-    </>
-  );
-}
-function Background() {
-  return (
-    <>
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:25px_25px] z-0"
-        ></motion.div>
-      </AnimatePresence>
     </>
   );
 }

@@ -23,6 +23,7 @@ import { Member,GroupData,Message } from "./CustomTypes";
 import { toast } from "sonner";
 
 
+
 function QUERYConstructor(Fn: CallableFunction, Params: string[], activationParam: boolean[],QKey:string)
 :{ data: any[]| any| undefined, isError: boolean, error:Error|null}{
   const checks = activationParam.reduce((acc, current) => acc && current, true)
@@ -46,6 +47,7 @@ function QUERYConstructor(Fn: CallableFunction, Params: string[], activationPara
 
 
 export function useSignUpAddUserQ() {
+  
   const [signInData, SetSignInData] = useState<{
     name: string;
     passcode: string;
@@ -59,6 +61,7 @@ export function useSignUpAddUserQ() {
     if (data && clicked) {
       console.log("clicking data");
       localStorage.setItem("jwt", data.token);
+      window.location.reload();
     }
   }, [data]);
 
@@ -66,6 +69,7 @@ export function useSignUpAddUserQ() {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 export function useLoginGetUserQ() {
+  
   const [LoginInData, SetlogInData] = useState<{
     name: string;
     passcode: string;
@@ -78,6 +82,7 @@ export function useLoginGetUserQ() {
     if (data && clicked) {
       console.log("clicking data");
       localStorage.setItem("jwt", data.token);
+      window.location.reload();
     }
   }, [data]);
   return { SetlogInData, SetClicked };

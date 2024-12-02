@@ -9,7 +9,6 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
 export default function SignInPage() {
   const [EntryState, setEntryState] = useState<"login" | "sign up">("login");
@@ -19,7 +18,6 @@ export default function SignInPage() {
   function LoginEntryState() {
     setEntryState("login");
   }
-  const navigate = useNavigate();
 
   return (
     <>
@@ -36,7 +34,7 @@ export default function SignInPage() {
                 <CardHeader className="text-center font-bold text-2xl">
                   SIGN UP
                 </CardHeader>
-                <CardContent className=" w-[40vw] max-w-[25rem] space-y-4  ">
+                <CardContent className=" w-[40vw] min-w-[20rem] max-w-[25rem] space-y-4  ">
                   <SignInForm></SignInForm>
                   <div className=" w-full text-center space-x-3 ">
                     <Label className="font-extralight ">have an account?</Label>
@@ -69,15 +67,9 @@ export default function SignInPage() {
             >
               <Card>
                 <CardHeader className="text-2xl font-bold text-center">
-                  <div
-                    onClick={() => {
-                      navigate("/home");
-                    }}
-                  >
-                    LOGIN
-                  </div>
+                  LOGIN
                 </CardHeader>
-                <CardContent className=" w-[40vw] max-w-[25rem] space-y-4">
+                <CardContent className=" w-[40vw] min-w-[20rem] max-w-[25rem] space-y-4">
                   <LogInForm></LogInForm>
                   <div className=" w-full text-center space-y-2">
                     <Label className="font-extralight ">

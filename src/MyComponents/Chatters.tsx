@@ -10,6 +10,7 @@ import {
 
 import { useGetUserGroups } from "@/P_Clean Code Abstractions/tanStackQueries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CustTooltip } from "./integratedComponents/Tooltip";
 
 export default function Chatters() {
   const Icons = useGroupStore((state) => state.groups);
@@ -21,48 +22,57 @@ export default function Chatters() {
         <div className="flex  justify-start w-full  h-[99.6vh] ">
           <div className=" relative flex flex-col  p-0 font-semibold w-full">
             <div className="relative shadow-2xl shadow-black outline-8 ">
-              <MessageCircleMoreIcon
-                onClick={() => {
-                  navigate("/home");
-                }}
-                className={
-                  "w-12 h-12  border-2 border-dashed p-2 shadow-3xl shadow-black border-black rounded-lg "
+              <CustTooltip
+                content={
+                  <MessageCircleMoreIcon
+                    onClick={() => {
+                      navigate("/home");
+                    }}
+                    className={
+                      "w-12 h-12  border-2 border-dashed p-2 shadow-3xl shadow-black border-black rounded-lg "
+                    }
+                    size={30}
+                    strokeWidth={1}
+                  ></MessageCircleMoreIcon>
                 }
-                size={30}
-                strokeWidth={1}
-              ></MessageCircleMoreIcon>
+                hoverContent={"Use to Navigate back to homepage..."}
+              ></CustTooltip>
             </div>
-
-            <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
-              {returnedGroupData.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="flex  my-2 space-x-3"
-                    onClick={() => {
-                      console.log(item.group_name);
-                      SetCurrentRoomInfo(item.group_name, item.group_id);
-                    }}
-                  >
-                    <Profimage></Profimage>
-                  </div>
-                );
-              })}
-              {Icons.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="flex  my-2 space-x-3"
-                    onClick={() => {
-                      console.log(item.group_name);
-                      SetCurrentRoomInfo(item.group_name, item.groupID);
-                    }}
-                  >
-                    <Profimage></Profimage>
-                  </div>
-                );
-              })}
-            </ScrollArea>
+            <CustTooltip
+              content={
+                <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
+                  {returnedGroupData.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex  my-2 space-x-3"
+                        onClick={() => {
+                          console.log(item.group_name);
+                          SetCurrentRoomInfo(item.group_name, item.group_id);
+                        }}
+                      >
+                        <Profimage></Profimage>
+                      </div>
+                    );
+                  })}
+                  {Icons.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex  my-2 space-x-3"
+                        onClick={() => {
+                          console.log(item.group_name);
+                          SetCurrentRoomInfo(item.group_name, item.groupID);
+                        }}
+                      >
+                        <Profimage></Profimage>
+                      </div>
+                    );
+                  })}
+                </ScrollArea>
+              }
+              hoverContent={"Individual Chat Groups"}
+            ></CustTooltip>
           </div>
         </div>
       </div>
