@@ -2,9 +2,15 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMoreIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useGroupStore } from "../STORES/MessageStore";
+import {
+  MessageStore,
+  useGroupStore,
+  useSwitcherStore,
+} from "../STORES/MessageStore";
 
 import { useGetUserGroups } from "@/P_Clean Code Abstractions/tanStackQueries";
+import { useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function Chatters() {
   const Icons = useGroupStore((state) => state.groups);
@@ -66,10 +72,26 @@ export default function Chatters() {
 }
 
 function Profimage() {
+  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const querrclient = useQueryClient();
+  const ClearTexts = MessageStore((state) => state.ClearMessage);
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => {
+      console.log("refetched messages");
+    },
+    onSuccess: () => {
+      querrclient.invalidateQueries({
+        queryKey: ["FetchedMessages", CurrentGroupCode],
+        exact: true,
+      });
+    },
+  });
   const nav = useNavigate();
   return (
     <Button
       onMouseUp={() => {
+        ClearTexts();
+        mutateAsync();
         nav("/conversations");
       }}
       className="aspect-square rounded-full h-[2rem] w-[2rem]"
