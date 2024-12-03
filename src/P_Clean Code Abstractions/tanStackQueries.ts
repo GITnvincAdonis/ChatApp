@@ -25,7 +25,7 @@ import { toast } from "sonner";
 
 
 function QUERYConstructor(Fn: CallableFunction, Params: string[], activationParam: boolean[],QKey:string)
-:{ data: any[]| any| undefined, isError: boolean, error:Error|null}{
+:{ data: any[]| any| undefined, isError: boolean, error:Error|null,isLoading: boolean}{
   const checks = activationParam.reduce((acc, current) => acc && current, true)
   const { data, isLoading, isError, error } = useQuery({
     queryFn: async () => {
@@ -38,7 +38,7 @@ function QUERYConstructor(Fn: CallableFunction, Params: string[], activationPara
 
   if(isError) console.log( `error at callbackfn ${Fn}: ${error}`);
   if (isLoading) console.log( `loading ${Fn.name}`);
-  return {data, isError, error}
+  return {data, isError, error, isLoading}
 }
 
 
@@ -222,14 +222,14 @@ export function useGetGroupMessages() {
   const CurrentGroupCode = useSwitcherStore((state) => state.code);
   const [OldMessages, SetOldMessages] = useState<Message[]>([]);
 
-  const {data}= QUERYConstructor(GetGroupMessages,[CurrentGroupCode],[ CurrentGroupCode != ""], "FetchedMessages" )
+  const {data,isLoading}= QUERYConstructor(GetGroupMessages,[CurrentGroupCode],[ CurrentGroupCode != ""], "FetchedMessages" )
   
   useEffect(() => {
     if (data) {
       SetOldMessages(data);
     }
   }, [data]);
-  return { OldMessages };
+  return { OldMessages,isLoading };
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -237,7 +237,7 @@ export function useGetGroupMembers() {
   const CurrentGroupCode = useSwitcherStore((state) => state.code);
   const [fetchMembers, SetMembers] = useState<Member[]>([]);
 
-  const {data:GroupMembers} = QUERYConstructor(GetGroupMembers, [CurrentGroupCode],[CurrentGroupCode != ''],"group_members")
+  const {data:GroupMembers,isLoading} = QUERYConstructor(GetGroupMembers, [CurrentGroupCode],[CurrentGroupCode != ''],"group_members")
 
   useEffect(() => {
     if (GroupMembers) {
@@ -245,7 +245,7 @@ export function useGetGroupMembers() {
       SetMembers(GroupMembers.members);
     }
   }, [GroupMembers]);
-  return { fetchMembers };
+  return { fetchMembers , isLoading };
 }
 ///////////////////////////////////////////////////////////////////////////////////
 

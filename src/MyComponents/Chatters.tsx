@@ -38,41 +38,37 @@ export default function Chatters() {
                 hoverContent={"Use to Navigate back to homepage..."}
               ></CustTooltip>
             </div>
-            <CustTooltip
-              content={
-                <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
-                  {returnedGroupData.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex  my-2 space-x-3"
-                        onClick={() => {
-                          console.log(item.group_name);
-                          SetCurrentRoomInfo(item.group_name, item.group_id);
-                        }}
-                      >
-                        <Profimage></Profimage>
-                      </div>
-                    );
-                  })}
-                  {Icons.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex  my-2 space-x-3"
-                        onClick={() => {
-                          console.log(item.group_name);
-                          SetCurrentRoomInfo(item.group_name, item.groupID);
-                        }}
-                      >
-                        <Profimage></Profimage>
-                      </div>
-                    );
-                  })}
-                </ScrollArea>
-              }
-              hoverContent={"Individual Chat Groups"}
-            ></CustTooltip>
+
+            <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
+              {returnedGroupData.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex  my-2 space-x-3"
+                    onClick={() => {
+                      console.log(item.group_name);
+                      SetCurrentRoomInfo(item.group_name, item.group_id);
+                    }}
+                  >
+                    <Profimage></Profimage>
+                  </div>
+                );
+              })}
+              {Icons.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex  my-2 space-x-3"
+                    onClick={() => {
+                      console.log(item.group_name);
+                      SetCurrentRoomInfo(item.group_name, item.groupID);
+                    }}
+                  >
+                    <Profimage></Profimage>
+                  </div>
+                );
+              })}
+            </ScrollArea>
           </div>
         </div>
       </div>

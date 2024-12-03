@@ -5,13 +5,14 @@ import { MessageStore, useSwitcherStore } from "../STORES/MessageStore";
 import { AntagBubble, ProtagBubble } from "./TextBubbles";
 import TextInput from "./Textinput";
 import { UserIDStore } from "@/STORES/userAuthStore";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   useGetGroupMembers,
   useGetGroupMessages,
 } from "@/P_Clean Code Abstractions/tanStackQueries";
 import { useEffect, useRef } from "react";
+import Loader from "./Loader";
 
 export default function ConversationPage() {
   const text = MessageStore((state) => state.MessageData);
@@ -19,8 +20,8 @@ export default function ConversationPage() {
   const CurrentGroupName = useSwitcherStore((state) => state.name);
   const CurrentGroupCode = useSwitcherStore((state) => state.code);
   const UserID = UserIDStore((state) => state.id);
-  const { OldMessages } = useGetGroupMessages();
-  const { fetchMembers } = useGetGroupMembers();
+  const { OldMessages, isLoading: loadingMessages } = useGetGroupMessages();
+  const { fetchMembers, isLoading: loadingMembers } = useGetGroupMembers();
   const navigate = useNavigate();
   if (!CurrentGroupCode) navigate("/home");
 
@@ -41,6 +42,13 @@ export default function ConversationPage() {
 
   return (
     <>
+      <AnimatePresence>
+        {(loadingMembers || loadingMessages) && (
+          <>
+            <Loader></Loader>
+          </>
+        )}
+      </AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

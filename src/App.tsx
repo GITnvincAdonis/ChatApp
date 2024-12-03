@@ -5,7 +5,6 @@ import "./App.css";
 import SignInPage from "./MyComponents/SignInPage";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 const Client = new QueryClient();
 
@@ -13,14 +12,13 @@ function App() {
   return (
     <>
       <Toaster />
+
       <QueryClientProvider client={Client}>
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path={"/"} element={<SignInPage></SignInPage>} />
-            <Route path={"/home"} element={<ChatPage />} />
-            <Route path={"/conversations"} element={<ConversationPage />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path={"/"} element={<SignInPage></SignInPage>} />
+          <Route path={"/home"} element={<ChatPage />} />
+          <Route path={"/conversations"} element={<ConversationPage />} />
+        </Routes>
       </QueryClientProvider>
     </>
   );
