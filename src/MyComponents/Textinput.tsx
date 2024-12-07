@@ -24,7 +24,7 @@ export default function TextInput() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleServerMessage = (string: any) => {
       console.log(`${string.text} : from server`);
-      AddToMessage(string.text, "left");
+      AddToMessage(string.text, "left", `${Date()}`);
     };
 
     socket.on("send-to-client", handleServerMessage);
@@ -68,19 +68,15 @@ export default function TextInput() {
         <Button
           disabled={textInput == "" ? true : false}
           onMouseDown={() => {
-           
-
             SendMessageToServer(
               textInput,
               CurrentRoomName,
               CurrentRoomID,
-              UserID
+              UserID,
+              AddToMessage
             );
-            AddToMessage(textInput, "right");
           }}
-          onMouseUp={() => {
-          
-          }}
+          onMouseUp={() => {}}
         >
           Send Message
         </Button>
@@ -100,7 +96,8 @@ function SendMessageToServer(
   textMessage: string,
   Room: string,
   CurrentRoomID: string,
-  user_id: string
+  user_id: string,
+  AddMessageFn: CallableFunction
 ) {
   const text: textData = {
     roomName: Room,
@@ -108,8 +105,14 @@ function SendMessageToServer(
     grp_ID: CurrentRoomID,
     user_ID: user_id,
   };
-  socket.emit("send-to-server", text, (message: string) => {
-    console.log("Sent message to server callback");
-    console.log(message);
-  });
+  socket.emit(
+    "send-to-server",
+    text,
+    ({ message, data }: { message: string; data: any }) => {
+      console.log("Sent message to server callback");
+      AddMessageFn(textMessage, "right", data.message_senddate);
+      console.log(data.message_senddate);
+      console.log(message);
+    }
+  );
 }

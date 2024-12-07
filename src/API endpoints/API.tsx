@@ -78,7 +78,7 @@ export const GetAllGroups = async (userID: string) => {
     );
     const response = await userGroups.json();
 
-    console.log(response.groups);
+    //console.log(response.groups);
     return response.groups;
   } catch (error) {
     showCustomErrorToast(error);
@@ -101,7 +101,7 @@ export const AddToGroupsEP = async (
       body: JSON.stringify({ chat_name, chat_password }),
     });
     const response = await userGroups.json();
-    console.log(response.group_ID.group_id);
+    //console.log(response.group_ID.group_id);
     return response.group_ID.group_id;
   } catch (error) {
     showCustomErrorToast(error);
@@ -133,7 +133,7 @@ export const AddToGroupMembersEP = async (
     }
     const Parsedresponse = await response.json();
 
-    console.log(Parsedresponse);
+    //console.log(Parsedresponse);
     return Parsedresponse;
   } catch (error) {
     showCustomErrorToast(error);
@@ -149,7 +149,7 @@ export const GetGroupMessages = async (group_id: string) => {
     );
     const response = await userGroups.json();
 
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     showCustomErrorToast(error);
@@ -171,7 +171,7 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
       }
     );
     const response = await userGroups.json();
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     showCustomErrorToast(error);
@@ -193,7 +193,7 @@ export const GetGroupMembers = async (group_id: string) => {
       }
     );
     const response = await userGroups.json();
-    console.log(response);
+    ///console.log(response);
     return response;
   } catch (error) {
     showCustomErrorToast(error);

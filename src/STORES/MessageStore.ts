@@ -1,19 +1,20 @@
 import { create } from "zustand";
 type ChatMessage = {
   value: string;
+  sentDate: string;
   side: "right" | "left";
 };
 
 interface storeType {
   MessageData: ChatMessage[];
-  UpdateMessage: (input: string, side: "right" | "left") => void;
+  UpdateMessage: (input: string, side: "right" | "left",sentDate:string) => void;
   ClearMessage: ()=> void;
 }
 export const MessageStore = create<storeType>((set) => ({
   MessageData: [],
-  UpdateMessage: (input: string, side: "right" | "left") => {
+  UpdateMessage: (input: string, side: "right" | "left", sentDate:string) => {
     set((state) => ({
-      MessageData: [...state.MessageData, { value: input, side: side }],
+      MessageData: [...state.MessageData, { value: input, side: side, sentDate: sentDate}],
     }));
   },
   ClearMessage: ()=> {

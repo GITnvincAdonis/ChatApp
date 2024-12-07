@@ -33,8 +33,8 @@ export default function ConversationPage() {
         "[data-radix-scroll-area-viewport]"
       );
       if (scrollableElement) {
-        console.log("found scrollable element");
-        console.log(scrollableElement);
+        //console.log("found scrollable element");
+        //console.log(scrollableElement);
         scrollableElement.scrollTop += scrollableElement.scrollHeight;
       }
     }
@@ -72,10 +72,10 @@ export default function ConversationPage() {
                 <h1 className="lg:text-xl font-mono">
                   {fetchMembers.map((item, index) => {
                     return (
-                      <>
+                      <div key={index}>
                         {item.username}
                         {index == fetchMembers.length - 1 ? "" : ", "}
-                      </>
+                      </div>
                     );
                   })}
                 </h1>
@@ -96,6 +96,7 @@ export default function ConversationPage() {
                       <div className="w-full flex justify-end">
                         <ProtagBubble
                           textContent={item.message_string}
+                          sentDate={`${item.message_senddate}`}
                         ></ProtagBubble>
                       </div>
                     )}
@@ -103,6 +104,7 @@ export default function ConversationPage() {
                       <div className="w-full flex justify-start">
                         <AntagBubble
                           textContent={item.message_string}
+                          sentDate={`${item.message_senddate}`}
                         ></AntagBubble>
                       </div>
                     )}
@@ -115,12 +117,18 @@ export default function ConversationPage() {
                     {" "}
                     {item.side === "right" && (
                       <div className="w-full flex justify-end">
-                        <ProtagBubble textContent={item.value}></ProtagBubble>
+                        <ProtagBubble
+                          sentDate={`${item.sentDate}`}
+                          textContent={item.value}
+                        ></ProtagBubble>
                       </div>
                     )}
                     {item.side === "left" && (
                       <div className="w-full flex justify-start">
-                        <AntagBubble textContent={item.value}></AntagBubble>
+                        <AntagBubble
+                          sentDate={`${item.sentDate}`}
+                          textContent={item.value}
+                        ></AntagBubble>
                       </div>
                     )}
                   </div>

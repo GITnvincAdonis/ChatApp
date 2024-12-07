@@ -36,8 +36,8 @@ function QUERYConstructor(Fn: CallableFunction, Params: string[], activationPara
     retry: false,
   });
 
-  if(isError) console.log( `error at callbackfn ${Fn}: ${error}`);
-  if (isLoading) console.log( `loading ${Fn.name}`);
+  //if(isError) console.log( `error at callbackfn ${Fn}: ${error}`);
+  //if (isLoading) console.log( `loading ${Fn.name}`);
   return {data, isError, error, isLoading}
 }
 
@@ -57,9 +57,9 @@ export function useSignUpAddUserQ() {
   const {data} = QUERYConstructor(SignUpEndpoint,[signInData.name, signInData.passcode],[clicked],"user_id")
  
   useEffect(() => {
-    console.log(data != undefined);
+    //console.log(data != undefined);
     if (data && clicked) {
-      console.log("clicking data");
+      //console.log("clicking data");
       localStorage.setItem("jwt", data.token);
       window.location.reload();
     }
@@ -78,9 +78,9 @@ export function useLoginGetUserQ() {
   const [clicked, SetClicked] = useState(false);
   const {data} = QUERYConstructor(LoginEndpoint,[LoginInData.name, LoginInData.passcode],[clicked],"user_id");
   useEffect(() => {
-    console.log(`login ${data}`);
+    //console.log(`login ${data}`);
     if (data && clicked) {
-      console.log("clicking data");
+     // console.log("clicking data");
       localStorage.setItem("jwt", data.token);
       window.location.reload();
     }
@@ -97,7 +97,7 @@ export function useTokenRetrieve() {
   const SetStoreUserName = UserIDStore((state) => state.ChangeName);
 
   useEffect(() => {
-    console.log(`login ${data}`);
+   // console.log(`login ${data}`);
 
     if (data && data.authData) {
       localStorage.setItem("userAuthData", JSON.stringify(data.authData));
@@ -107,8 +107,8 @@ export function useTokenRetrieve() {
 
       SetStoreUserID(userId);
       SetStoreUserName(username);
-      console.log("User ID:", userId);
-      console.log("Username:", username);
+      //console.log("User ID:", userId);
+      //console.log("Username:", username);
     } else {
       console.log("authData is missing from data");
     }
@@ -129,7 +129,7 @@ export function useAddToUserQ() {
     if (ReturnedGroupPost != "" && ReturnedGroupPost != undefined){
       const alreadyInGroup = Groups.some(g =>g.group_name === newroomName)
       if(!alreadyInGroup){
-        console.log(Groups);
+        //console.log(Groups);
         
         UpdateCurrentNewGroupID(ReturnedGroupPost)
         toast("Successfully created group.");
@@ -169,7 +169,7 @@ export function useAddToGroupMembersQ() {
   }, [data]);
 
   useEffect(() => {
-    console.log(CurrentgroupID);
+    //console.log(CurrentgroupID);
     if (data) {
       console.log(data.data.group_id);
       if(!isError)UpdateChatList(GroupName, data.data.group_id);
@@ -229,7 +229,7 @@ export function useGetGroupMembers() {
 
   useEffect(() => {
     if (GroupMembers) {
-      console.log(GroupMembers.members);
+      //console.log(GroupMembers.members);
       SetMembers(GroupMembers.members);
     }
   }, [GroupMembers]);
