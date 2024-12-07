@@ -18,7 +18,7 @@ export const LoginEndpoint = async (
     //console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -38,7 +38,7 @@ export const SignUpEndpoint = async (
     //console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -57,7 +57,7 @@ export const TokenUserInfo = async () => {
     //console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -81,7 +81,7 @@ export const GetAllGroups = async (userID: string) => {
     console.log(response.groups);
     return response.groups;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -104,7 +104,7 @@ export const AddToGroupsEP = async (
     console.log(response.group_ID.group_id);
     return response.group_ID.group_id;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -136,36 +136,9 @@ export const AddToGroupMembersEP = async (
     console.log(Parsedresponse);
     return Parsedresponse;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.error("Error in AddToGroupMembersEP:", error);
     throw error; // Rethrow the error for frontend handling
-  }
-};
-
-export const PostMessage = async (
-  text: string,
-  group_id: string,
-  user_id: string
-) => {
-  try {
-    const userGroups = await fetch(
-      `${import.meta.env.VITE_END_POINT}/messages`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ text, user_id, group_id }),
-      }
-    );
-    const response = await userGroups.json();
-
-    //console.log(response.message_id);
-    return response;
-  } catch (error) {
-    showCustomErrorToast(error)
-    console.log(error);
   }
 };
 
@@ -179,7 +152,7 @@ export const GetGroupMessages = async (group_id: string) => {
     console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.log(error);
   }
 };
@@ -201,7 +174,7 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
     console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.error("Error in Getting group ID:", error);
     throw error; // Rethrow the error for frontend handling
   }
@@ -223,7 +196,7 @@ export const GetGroupMembers = async (group_id: string) => {
     console.log(response);
     return response;
   } catch (error) {
-    showCustomErrorToast(error)
+    showCustomErrorToast(error);
     console.error("Error in Getting group ID:", error);
     throw error; // Rethrow the error for frontend handling
   }

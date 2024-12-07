@@ -6,7 +6,7 @@ import {
   GetGroupMembers,
   GetGroupMessages,
   LoginEndpoint,
-  PostMessage,
+
   SignUpEndpoint,
   TokenUserInfo,
 } from "@/API endpoints/API";
@@ -180,19 +180,7 @@ export function useAddToGroupMembersQ() {
 }
 
 ////////////////////////////////////////////////////////////////////////////
-export function usePostMessageQ(textInput: string) {
-  const [buttonClicked, setClicked] = useState(false);
-  const GroupID = useSwitcherStore((state) => state.code);
-  const UserID = UserIDStore((state) => state.id);
 
-  const {data} = QUERYConstructor(PostMessage,[textInput, GroupID, UserID],[buttonClicked ,textInput !== ""],'messages')
-
-  useEffect(() => {
-    if (data) console.log(data);
-  }, [data]);
-
-  return { setClicked, buttonClicked };
-}
 
 ////////////////////////////////////////////////////////////////////////////////////
 export function useGetGroupIDQ(roomName: string, passcode: string) {
