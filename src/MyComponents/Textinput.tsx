@@ -36,7 +36,7 @@ export default function TextInput() {
   const CurrentRoomName = useSwitcherStore((state) => state.name);
   const CurrentRoomID = useSwitcherStore((state) => state.code);
   const UserID = UserIDStore((state) => state.id);
-
+  const token = localStorage.getItem("jwt");
   useEffect(() => {
     console.log(CurrentRoomName);
     socket.emit("join-group", { group_name: CurrentRoomName });
@@ -68,13 +68,16 @@ export default function TextInput() {
         <Button
           disabled={textInput == "" ? true : false}
           onMouseDown={() => {
-            SendMessageToServer(
-              textInput,
-              CurrentRoomName,
-              CurrentRoomID,
-              UserID,
-              AddToMessage
-            );
+            if (token) {
+              SendMessageToServer(
+                textInput,
+                CurrentRoomName,
+                CurrentRoomID,
+                UserID,
+                AddToMessage,
+                token
+              );
+            }
           }}
           onMouseUp={() => {}}
         >
@@ -90,6 +93,7 @@ interface textData {
   text: string;
   grp_ID: string;
   user_ID: string;
+  authToken: string; // Add Auth token for security purposes, this is just a placeholder
 }
 
 function SendMessageToServer(
@@ -97,13 +101,15 @@ function SendMessageToServer(
   Room: string,
   CurrentRoomID: string,
   user_id: string,
-  AddMessageFn: CallableFunction
+  AddMessageFn: CallableFunction,
+  Token: string
 ) {
   const text: textData = {
     roomName: Room,
     text: textMessage,
     grp_ID: CurrentRoomID,
     user_ID: user_id,
+    authToken: Token,
   };
   socket.emit(
     "send-to-server",
