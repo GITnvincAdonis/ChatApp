@@ -47,6 +47,7 @@ export default function Chatters() {
                     className="flex  my-2 space-x-3"
                     onClick={() => {
                       console.log(item.group_name);
+                      console.log(item.group_id);
                       SetCurrentRoomInfo(item.group_name, item.group_id);
                     }}
                   >
@@ -77,7 +78,7 @@ export default function Chatters() {
 }
 
 function Profimage() {
-  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const CurrentRoomID = useSwitcherStore((state) => state.ID);
   const querrclient = useQueryClient();
   const ClearTexts = MessageStore((state) => state.ClearMessage);
   const { mutateAsync } = useMutation({
@@ -86,7 +87,7 @@ function Profimage() {
     },
     onSuccess: () => {
       querrclient.invalidateQueries({
-        queryKey: ["FetchedMessages", CurrentGroupCode],
+        queryKey: ["FetchedMessages", CurrentRoomID],
         exact: true,
       });
     },

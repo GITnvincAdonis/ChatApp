@@ -157,7 +157,11 @@ export const GetGroupMessages = async (group_id: string) => {
   }
 };
 
-export const GetGroup = async (group_name: string, chat_password: string) => {
+export const GetGroup = async (
+  group_name: string,
+  chat_password: string,
+  grp_ID: string
+) => {
   try {
     const userGroups = await fetch(
       `${import.meta.env.VITE_END_POINT}/groups/single_group_id`,
@@ -167,11 +171,14 @@ export const GetGroup = async (group_name: string, chat_password: string) => {
           "Content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ group_name, chat_password }),
+        body: JSON.stringify({ group_name, chat_password, grp_ID }),
       }
     );
     const response = await userGroups.json();
-    //console.log(response);
+    if (!response.group_ID) {
+      showCustomErrorToast(response.message);
+    }
+    console.log(response);
     return response;
   } catch (error) {
     showCustomErrorToast(error);

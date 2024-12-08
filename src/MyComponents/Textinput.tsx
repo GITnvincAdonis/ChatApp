@@ -34,7 +34,7 @@ export default function TextInput() {
   }, []);
 
   const CurrentRoomName = useSwitcherStore((state) => state.name);
-  const CurrentRoomID = useSwitcherStore((state) => state.code);
+  const CurrentRoomID = useSwitcherStore((state) => state.ID);
   const UserID = UserIDStore((state) => state.id);
   const token = localStorage.getItem("jwt");
   useEffect(() => {

@@ -15,7 +15,8 @@ export function AcModal1() {
 export function AcModal2() {
   const [roomName, setRoomName] = useState("");
   const [passcode, setPassCode] = useState("");
-  const { toggleFetch } = useGetGroupIDQ(roomName, passcode);
+  const [id, setID] = useState("");
+  const { toggleFetch } = useGetGroupIDQ(roomName, passcode, id);
   const { toggleFetch: AddGrpMem, setName } = useAddToGroupMembersQ();
 
   return (
@@ -33,7 +34,7 @@ export function AcModal2() {
           }}
         />
       </div>
-      <div className="flex flex-col items-center py-5 gap-3 ">
+      <div className="flex flex-col items-center pt-5 gap-3 ">
         <Label htmlFor="username" className="text-start w-full">
           Passcode
         </Label>
@@ -45,8 +46,20 @@ export function AcModal2() {
           placeholder="Enter passcode"
         />
       </div>
+      <div className="flex flex-col items-center py-5 gap-3 ">
+        <Label htmlFor="username" className="text-start w-full">
+          Group ID
+        </Label>
+        <Input
+          onChange={(e) => {
+            setID(e.target.value || "");
+          }}
+          id="username"
+          placeholder="Enter Group ID"
+        />
+      </div>
       <Button
-        disabled={!(roomName != "" && passcode != "")}
+        disabled={!(roomName != "" && passcode != "" && id != "")}
         className="w-full bg-black text-white"
         onClick={() => {}}
         onMouseDown={() => {

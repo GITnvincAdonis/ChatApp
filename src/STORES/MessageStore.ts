@@ -40,19 +40,23 @@ export const useGroupStore = create<GroupStoreType>((set) => ({
   },
 }));
 /////////////////////////////////////////////
-interface RoomCode {
+interface RoomID {
   name: string;
-  code: string;
-  SetCurrentRoom: (name: string, code: string) => void;
+  ID: string;
+
+  SetCurrentRoom: (name: string, ID: string) => void;
+
 }
 
-export const useSwitcherStore = create<RoomCode>((set) => ({
+export const useSwitcherStore = create<RoomID>((set) => ({
   name: "",
-  code: "",
-  SetCurrentRoom: (name, code) => {
+  ID: "",
+
+  SetCurrentRoom: (name, ID) => {
     set(() => ({ name: name }));
-    set(() => ({ code: code }));
+    set(() => ({ ID: ID }));
   },
+
 }));
 ///fetched
 interface groupData {

@@ -13,17 +13,24 @@ import {
 } from "@/P_Clean Code Abstractions/tanStackQueries";
 import { useEffect, useRef } from "react";
 import Loader from "./Loader";
+import { SettingsIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function ConversationPage() {
   const text = MessageStore((state) => state.MessageData);
 
   const CurrentGroupName = useSwitcherStore((state) => state.name);
-  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const CurrentRoomID = useSwitcherStore((state) => state.ID);
+
   const UserID = UserIDStore((state) => state.id);
   const { OldMessages, isLoading: loadingMessages } = useGetGroupMessages();
   const { fetchMembers, isLoading: loadingMembers } = useGetGroupMembers();
   const navigate = useNavigate();
-  if (!CurrentGroupCode) navigate("/home");
+  if (!CurrentRoomID) navigate("/home");
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +72,7 @@ export default function ConversationPage() {
             </div>
             <div className=" flex items-center justify-center space-x-3 px-2">
               <div className=" lg:h-[6rem] h-[3.5rem] aspect-square rounded-full bg-slate-900"></div>
+
               <div>
                 <h1 className="text-4xl font-bold font-Geist">
                   {CurrentGroupName}
@@ -79,6 +87,26 @@ export default function ConversationPage() {
                     );
                   })}
                 </h1>
+              </div>
+              <div>
+                <Popover>
+                  <PopoverTrigger asChild className="m-2">
+                    <SettingsIcon size={50}></SettingsIcon>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="right"
+                    className="w-full h-0 border p-0 text-center bg-none shadow-none "
+                  >
+                    <div className="flex bg-primary m-0 rounded-lg p-4 flex-col items-end space-y-0 mx-4">
+                      {" "}
+                      <h1 className="max-w-[10rem] text-background h-full ">
+                        <span className="font-bold">Group ID: </span>
+                        <br></br>
+                        {CurrentRoomID}
+                      </h1>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>

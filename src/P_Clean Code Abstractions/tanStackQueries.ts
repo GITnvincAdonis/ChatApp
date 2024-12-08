@@ -183,18 +183,20 @@ export function useAddToGroupMembersQ() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////
-export function useGetGroupIDQ(roomName: string, passcode: string) {
+export function useGetGroupIDQ(roomName: string, passcode: string, group_ID: string) {
   const UpdateChatList = useGroupStore((state) => state.UpdateGroups);
   const [triggerGroupIdFetch, toggleFetch] = useState(false);
   const SetGroupID = UserIDStore((state) => state.setNewGroupID);
   const FetchedGroups = useFetchedGroupsStore((state) => state.group);
 
-  const {data,isError} = QUERYConstructor(GetGroup, [roomName, passcode],[triggerGroupIdFetch],'join-unknown-group')
+  const {data,isError} = QUERYConstructor(GetGroup, [roomName, passcode,group_ID],[triggerGroupIdFetch],'join-unknown-group')
   
   useEffect(() => {
   
     if (data) {
-      SetGroupID(data.group_ID);
+      console.log(data.group_ID.group_id);
+      SetGroupID(data.group_ID.group_id);
+
 
       const alreadyPreset = FetchedGroups.some(group => group.group_id === data.group_ID);
       console.log(alreadyPreset);
@@ -207,10 +209,10 @@ export function useGetGroupIDQ(roomName: string, passcode: string) {
 
 
 export function useGetGroupMessages() {
-  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const CurrentGroupID = useSwitcherStore((state) => state.ID);
   const [OldMessages, SetOldMessages] = useState<Message[]>([]);
 
-  const {data,isLoading}= QUERYConstructor(GetGroupMessages,[CurrentGroupCode],[ CurrentGroupCode != ""], "FetchedMessages" )
+  const {data,isLoading}= QUERYConstructor(GetGroupMessages,[CurrentGroupID],[ CurrentGroupID != ""], "FetchedMessages" )
   
   useEffect(() => {
     if (data) {
@@ -222,7 +224,7 @@ export function useGetGroupMessages() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export function useGetGroupMembers() {
-  const CurrentGroupCode = useSwitcherStore((state) => state.code);
+  const CurrentGroupCode = useSwitcherStore((state) => state.ID);
   const [fetchMembers, SetMembers] = useState<Member[]>([]);
 
   const {data:GroupMembers,isLoading} = QUERYConstructor(GetGroupMembers, [CurrentGroupCode],[CurrentGroupCode != ''],"group_members")
