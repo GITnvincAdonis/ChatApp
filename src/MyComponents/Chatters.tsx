@@ -41,6 +41,7 @@ export default function Chatters() {
 
             <ScrollArea className="m-0 absolute inset-0 z-0 ms-2 h-full w-full  ">
               {returnedGroupData.map((item, index) => {
+                const firstLetter = item.group_name.split("")[0];
                 return (
                   <div
                     key={index}
@@ -51,11 +52,12 @@ export default function Chatters() {
                       SetCurrentRoomInfo(item.group_name, item.group_id);
                     }}
                   >
-                    <Profimage></Profimage>
+                    <Profimage GroupLetter={firstLetter}></Profimage>
                   </div>
                 );
               })}
               {Icons.map((item, index) => {
+                const firstLetter = item.group_name.split("")[0];
                 return (
                   <div
                     key={index}
@@ -65,7 +67,7 @@ export default function Chatters() {
                       SetCurrentRoomInfo(item.group_name, item.groupID);
                     }}
                   >
-                    <Profimage></Profimage>
+                    <Profimage GroupLetter={firstLetter}></Profimage>
                   </div>
                 );
               })}
@@ -77,7 +79,8 @@ export default function Chatters() {
   );
 }
 
-function Profimage() {
+function Profimage(props: { GroupLetter: string }) {
+  const { GroupLetter } = props;
   const CurrentRoomID = useSwitcherStore((state) => state.ID);
   const querrclient = useQueryClient();
   const ClearTexts = MessageStore((state) => state.ClearMessage);
@@ -101,6 +104,8 @@ function Profimage() {
         nav("/conversations");
       }}
       className="aspect-square rounded-full h-[2rem] w-[2rem]"
-    ></Button>
+    >
+      {GroupLetter}
+    </Button>
   );
 }

@@ -59,7 +59,7 @@ export default function TextInput() {
         className="flex justify-center lg:px-20 space-x-1 "
       >
         <Input
-          className=" lg:w-[30rem] w-[10rem] outline outline-1 text-sm"
+          className=" lg:w-[60rem] w-[10rem] outline outline-1 text-sm"
           placeholder="Send message to ..."
           onChange={(e) => {
             Setinput(e.target.value || "");

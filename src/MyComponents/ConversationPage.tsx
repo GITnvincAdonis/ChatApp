@@ -46,7 +46,7 @@ export default function ConversationPage() {
       }
     }
   }, [text, OldMessages]);
-
+  const GroupLetter = CurrentGroupName.split("")[0];
   return (
     <>
       <AnimatePresence>
@@ -71,7 +71,11 @@ export default function ConversationPage() {
               <IntegratedPopover></IntegratedPopover>
             </div>
             <div className=" flex items-center justify-center space-x-3 px-2">
-              <div className=" lg:h-[6rem] h-[3.5rem] aspect-square rounded-full bg-slate-900"></div>
+              <div className=" text-center rounded-full bg-slate-900 text-white">
+                <div className="text-center m-6 font-bold text-3xl h-[2rem] w-[2rem]">
+                  {GroupLetter}
+                </div>
+              </div>
 
               <div>
                 <h1 className="text-4xl font-bold font-Geist">
@@ -90,8 +94,16 @@ export default function ConversationPage() {
               </div>
               <div>
                 <Popover>
-                  <PopoverTrigger asChild className="m-2">
-                    <SettingsIcon size={50}></SettingsIcon>
+                  <PopoverTrigger asChild className="">
+                    <motion.div
+                      whileHover={{ scale: 1.07 }}
+                      className="border p-4 rounded-lg bg-foreground"
+                    >
+                      <SettingsIcon
+                        className="text-background"
+                        size={40}
+                      ></SettingsIcon>
+                    </motion.div>
                   </PopoverTrigger>
                   <PopoverContent
                     side="right"

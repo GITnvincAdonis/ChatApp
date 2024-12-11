@@ -172,7 +172,11 @@ export function useAddToGroupMembersQ() {
     //console.log(CurrentgroupID);
     if (data) {
       console.log(data.data.group_id);
-      if(!isError)UpdateChatList(GroupName, data.data.group_id);
+      if(!isError){
+        toast("Successfully Joined group.");
+        UpdateChatList(GroupName, data.data.group_id);
+    
+      }
     }
    
   }, [data]);
